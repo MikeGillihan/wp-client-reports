@@ -278,7 +278,13 @@ add_action( 'wp_dashboard_setup', 'wp_client_reports_add_dashboard_widget' );
  * Create the function to output the contents of our Dashboard Widget.
  */
 function wp_client_reports_last30_widget_function() {
-    $data = wp_client_reports_get_stats_data();
+    $timezone_string = get_option('timezone_string');
+    if ($timezone_string) {
+        date_default_timezone_set(get_option('timezone_string'));
+    }
+    $start_date = date('Y-m-d', strtotime('-30 days'));
+    $end_date = date('Y-m-d');
+    $data = wp_client_reports_get_stats_data($start_date, $end_date);
     ?>
     <div class="wp-client-reports-big-numbers wp-client-reports-big-numbers-widget">
         <div class="wp-client-reports-big-number">
