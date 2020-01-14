@@ -1,0 +1,223 @@
+.wp-client-reports-header {
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.wp-client-reports-stats-screen {
+    margin:10px 20px 10px 0px;
+}
+.wp-client-reports-stats-screen h1 {
+    font-size: 23px;
+    font-weight: 400;
+    margin: 0;
+    padding: 9px 0 4px 0;
+    line-height: 1.3;
+}
+.wp-client-reports-stats-screen .button .dashicons {
+    position: relative;
+    top:3px;
+}
+.wp-client-reports-stats-screen h3 {
+    font-size: 15px;
+    font-weight: 600;
+}
+.wp-client-reports-postbox-big-numbers {
+    margin:20px 0px 40px;
+}
+.wp-client-reports-big-numbers {
+    text-align:center;
+}
+.wp-client-reports-big-numbers {
+    display:flex;
+    align-items: top;
+    justify-content: center;
+}
+.wp-client-reports-big-numbers .wp-client-reports-big-number {
+    width:25%;
+    padding:5px 30px;
+    margin:10px 0px;
+    border-right:solid 1px #eee;
+}
+.wp-client-reports-big-numbers.wp-client-reports-big-numbers-widget .wp-client-reports-big-number {
+    width:33.333%;
+
+}
+.wp-client-reports-big-numbers .wp-client-reports-big-number:last-child {
+    border-right:0px;
+}
+.wp-client-reports-big-numbers .wp-client-reports-big-number h2 {
+    font-size:80px;
+    line-height: 1em;
+    margin:0px 0px 5px;
+    padding:0px;
+    font-weight: bold;
+    color:#007cba;
+}
+.wp-client-reports-big-numbers.wp-client-reports-big-numbers-widget .wp-client-reports-big-number h2 {
+    font-size:40px;
+}
+.wp-client-reports-big-numbers .wp-client-reports-big-number h3 {
+    text-transform: uppercase;
+    color:#888;
+    font-size:20px;
+    line-height:1.1em;
+    margin:0px;
+    font-weight: 300;
+}
+.wp-client-reports-big-numbers.wp-client-reports-big-numbers-widget .wp-client-reports-big-number h3 {
+    font-size:14px;
+    text-transform: uppercase;
+}
+.wp-client-reports-updates-list {
+    list-style: none;
+    margin:0px 0px 40px;
+    padding:0px;
+}
+.wp-client-reports-updates-list li {
+    background:#FFF;
+    border: 1px solid #ccd0d4;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    margin:0px 0px 4px;
+    padding:12px 20px;
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.wp-client-reports-updates-list li.wp-client-reports-empty {
+    background: #e3e3e3;
+    color: #999;
+}
+.wp-client-reports-updates-list li strong {
+    display:block;
+    width:40%;
+}
+.wp-client-reports-updates-list li .wp-client-reports-from-to {
+    display:block;
+    width:20%;
+    text-align:center;
+}
+.wp-client-reports-updates-list li .wp-client-reports-date {
+    display:block;
+    width:40%;
+    text-align:right;
+}
+.wp-client-reports-updates-list li .dashicons-arrow-right-alt {
+    margin:0px 10px;
+    color: #007cba;
+}
+.wp-client-reports-date-chooser-area {
+    position: relative;
+}
+#wp-client-reports-date-chooser {
+	position: absolute;
+	right:0px;
+	top:28px;
+	width:600px;
+	border: 1px solid #ccd0d4;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    background: #fff;
+	z-index: 100;
+}
+#wp-client-reports-date-chooser .date-chooser-presets {
+	padding:20px;
+	float:left;
+	width:20%;
+	box-sizing: border-box;
+}
+#wp-client-reports-date-chooser .date-chooser-presets ul {
+	margin:0px;
+}
+#wp-client-reports-date-chooser #date-range {
+	float:left;
+	width:80%;
+	padding:20px 0px 45px 0px;
+    box-sizing: border-box;
+    position: relative;
+}
+#wp-client-reports-date-chooser #date-range .ui-datepicker-group {
+	float:left;
+	width:50%;
+	text-align: center;
+	padding-right:20px;
+	box-sizing: border-box;
+}
+#wp-client-reports-date-chooser #date-range .ui-datepicker-calendar {
+	width:100%;
+}
+#wp-client-reports-date-chooser #date-range .ui-datepicker-calendar td .ui-state-default {
+	width:100%;
+	border-radius: 4px;
+	padding:2px;
+	display: block;
+}
+#wp-client-reports-date-chooser #date-range .ui-datepicker-calendar td a.ui-state-default {
+	color:#444;
+	text-decoration: none;
+}
+#wp-client-reports-date-chooser #date-range .ui-datepicker-calendar td a.ui-state-default:hover {
+	background-color:#ddd;
+	text-decoration: none;
+}
+#wp-client-reports-date-chooser #date-range .ui-datepicker-calendar td.ui-state-disabled span.ui-state-default {
+	color:#999;
+}
+#wp-client-reports-date-chooser .date-chooser-footer {
+	clear:left;
+	border-top:solid 1px #e5e5e5;
+	text-align: right;
+	padding:20px;
+}
+#wp-client-reports-date-chooser .date-chooser-footer .wp-client-reports-dates {
+    display:inline-block;
+    margin-right:20px;
+    line-height:30px;
+}
+#wp-client-reports-date-chooser .ui-datepicker-title {
+	text-align: center;
+	font-size:16px;
+	font-weight: bold;
+}
+#wp-client-reports-date-chooser .ui-datepicker-prev {
+    position: absolute;
+    bottom:20px;
+    left:4px;
+    cursor: pointer;
+}
+#wp-client-reports-date-chooser .ui-datepicker-next {
+    position: absolute;
+    bottom:20px;
+    right:20px;
+    cursor: pointer;
+}
+#wp-client-reports-date-chooser .ui-datepicker-prev.ui-state-disabled, 
+#wp-client-reports-date-chooser .ui-datepicker-next.ui-state-disabled {
+    cursor: default;
+    color:#ccc;
+}
+/* .wp-client-reports-date-chooser-button {
+	-webkit-appearance: none;
+	background:#FFF;
+	border: 1px solid #ccd0d4;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    padding:4px 15px;
+    border-radius: 3px;
+} */
+#wp-client-reports-date-chooser #date-range .ui-datepicker-calendar td.dp-highlight a.ui-state-default {
+    background: #007cba;
+    color:#FFF;
+    border-radius: 0px;
+}
+
+.dashboard_page_wp_client_reports #TB_ajaxContent {
+    height: 280px !important;
+}
+
+#report-email {
+    width: 100%;
+}
+
+#report-intro {
+    width: 100%;
+    height:100px;
+}
