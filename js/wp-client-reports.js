@@ -1,12 +1,6 @@
 (function( $ ) {
     "use strict";
 
-    $(window).load(function() {
-
-	    //These functions are affected by fonts loading
-
-	});
-
 	$( document ).ready(function() {
 
 		$("#wp-client-reports-date-chooser-button").click(function() {
@@ -151,16 +145,13 @@
                     $(".from_value").val(dateText);
                     $("#wp-client-reports-start-date").text(moment(dateText).format(js_date_format));
                     $(".to_value").val("");
-                    console.log(dateText + " thing");
                 } else if (selectedDate < date1) {
                     $(".to_value").val($("#from_value").val());
                     $(".from_value").val(dateText);
                     $("#wp-client-reports-end-date").text(moment(dateText).format(js_date_format));
-                    // console.log(dateText + " blah");
                 } else {
                     $(".to_value").val(dateText);
                     $("#wp-client-reports-end-date").text(moment(dateText).format(js_date_format));
-                    // console.log(dateText + " blarg");
                 }
                 //$(this).datepicker(); //not really sure why this was here?
             }
@@ -225,18 +216,11 @@
         });
     }
 
-    
-    
     function getDateFormat() {
-        var php_date_format = wp_client_reports_data.php_date_format;
-        if (php_date_format == 'F j, Y') {
-            return 'MMMM D, YYYY';
-        } else if (php_date_format == 'Y-m-d') {
-            return 'YYYY-MM-DD';
-        } else if (php_date_format == 'm/d/Y') {
+        if (wp_client_reports_data.moment_date_format) {
+            return wp_client_reports_data.moment_date_format;
+        } else {
             return 'MM/DD/YYYY';
-        } else if (php_date_format == 'd/m/Y') {
-            return 'DD/MM/YYYY';
         }
     }
 
