@@ -23,8 +23,8 @@
     font-weight: 600;
     margin-top:0px;
 }
-.wp-client-reports-postbox-big-numbers {
-    margin:20px 0px 40px;
+.wp-client-reports-postbox {
+    margin:10px 0px;
 }
 .wp-client-reports-big-numbers {
     text-align:center;
@@ -34,20 +34,20 @@
     align-items: top;
     justify-content: center;
 }
-.wp-client-reports-big-numbers .wp-client-reports-big-number {
+.wp-client-reports-postbox .wp-client-reports-big-number {
     width:25%;
     padding:5px 30px;
     margin:10px 0px;
     border-right:solid 1px #eee;
 }
-.wp-client-reports-big-numbers.wp-client-reports-big-numbers-widget .wp-client-reports-big-number {
+.wp-client-reports-big-numbers.wp-client-reports-last30-widget .wp-client-reports-big-number {
     width:33.333%;
 
 }
 .wp-client-reports-big-numbers .wp-client-reports-big-number:last-child {
     border-right:0px;
 }
-.wp-client-reports-big-numbers .wp-client-reports-big-number h2 {
+.wp-client-reports-postbox .wp-client-reports-big-number h2 {
     font-size:80px;
     line-height: 1em;
     margin:0px 0px 5px;
@@ -55,10 +55,10 @@
     font-weight: bold;
     color:#007cba;
 }
-.wp-client-reports-big-numbers.wp-client-reports-big-numbers-widget .wp-client-reports-big-number h2 {
+.wp-client-reports-big-numbers.wp-client-reports-last30-widget .wp-client-reports-big-number h2 {
     font-size:40px;
 }
-.wp-client-reports-big-numbers .wp-client-reports-big-number h3 {
+.wp-client-reports-postbox .wp-client-reports-big-number h3 {
     text-transform: uppercase;
     color:#888;
     font-size:20px;
@@ -66,16 +66,16 @@
     margin:0px;
     font-weight: 300;
 }
-.wp-client-reports-big-numbers.wp-client-reports-big-numbers-widget .wp-client-reports-big-number h3 {
+.wp-client-reports-big-numbers.wp-client-reports-last30-widget .wp-client-reports-big-number h3 {
     font-size:14px;
     text-transform: uppercase;
 }
-.wp-client-reports-updates-list {
+.wp-client-reports-list {
     list-style: none;
     margin:0px;
     padding:0px;
 }
-.wp-client-reports-updates-list li {
+.wp-client-reports-list li {
     background: #fafafa;
     border: 1px solid #eee;
     margin:0px 0px 5px;
@@ -84,24 +84,24 @@
     align-items: center;
     justify-content: space-between;
 }
-.wp-client-reports-updates-list li.wp-client-reports-empty {
+.wp-client-reports-list li.wp-client-reports-empty {
     color: #999;
 }
-.wp-client-reports-updates-list li strong {
+.wp-client-reports-list li strong {
     display:block;
     width:40%;
 }
-.wp-client-reports-updates-list li .wp-client-reports-from-to {
+.wp-client-reports-list li .wp-client-reports-from-to {
     display:block;
     width:20%;
     text-align:center;
 }
-.wp-client-reports-updates-list li .wp-client-reports-date {
+.wp-client-reports-list li .wp-client-reports-date {
     display:block;
     width:40%;
     text-align:right;
 }
-.wp-client-reports-updates-list li .dashicons-arrow-right-alt {
+.wp-client-reports-list li .dashicons-arrow-right-alt {
     margin:0px 10px;
     color: #007cba;
 }

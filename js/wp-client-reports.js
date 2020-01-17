@@ -20,12 +20,10 @@
         });
 
         $("#wp-client-reports-force-update").click(function() {
-            var httpProtocol = ('https:' == document.location.protocol ? 'https://' : 'http://');
-            var hostUrl = window.location.host;
             var dataString = 'action=wp_client_reports_force_update';
             $.ajax({
                 type: "GET",
-                url: httpProtocol + hostUrl + '/wp-admin/admin-ajax.php',
+                url: ajaxurl,
                 data: dataString,
                 dataType: 'json',
                 success: function(data, err) {
@@ -161,12 +159,10 @@
 
     $("#wp-client-reports-send-email-report").submit(function(e) {
         e.preventDefault();
-        var httpProtocol = ('https:' == document.location.protocol ? 'https://' : 'http://');
-		var hostUrl = window.location.host;
         var dataString = $("#wp-client-reports-send-email-report").serialize();
         $.ajax({
             type: "GET",
-            url: httpProtocol + hostUrl + '/wp-admin/admin-ajax.php',
+            url: ajaxurl,
             data: dataString,
             dataType: 'json',
             success: function(data, err) {
@@ -176,24 +172,22 @@
     });
 
     function getData(startDate, endDate) {
-        var httpProtocol = ('https:' == document.location.protocol ? 'https://' : 'http://');
-		var hostUrl = window.location.host;
         var dataString = 'action=wp_client_reports_stats_data&start=' + moment(startDate).utc().format("YYYY-MM-DD") + '&end=' + moment(endDate).utc().format("YYYY-MM-DD");
         var js_date_format = getDateFormat();
         $.ajax({
             type: "GET",
-            url: httpProtocol + hostUrl + '/wp-admin/admin-ajax.php',
+            url: ajaxurl,
             data: dataString,
             dataType: 'json',
             success: function(data, err) {
-                $("#wp-client-reports-total-update-count").text(data.total_updates);
-                $("#wp-client-reports-wp-update-count").text(data.wp_updated);
-                $("#wp-client-reports-plugin-update-count").text(data.total_plugins_updated);
-                $("#wp-client-reports-theme-update-count").text(data.total_themes_updated);
+                $("#wp-client-reports-total-update-count").text(data.updates.total_updates);
+                $("#wp-client-reports-wp-update-count").text(data.updates.wp_updated);
+                $("#wp-client-reports-plugin-update-count").text(data.updates.total_plugins_updated);
+                $("#wp-client-reports-theme-update-count").text(data.updates.total_themes_updated);
                 $("#wp-client-reports-wp-updates-list").html("");
                 $("#wp-client-reports-plugin-updates-list").html("");
                 $("#wp-client-reports-theme-updates-list").html("");
-                $.each(data.updates, function( index, update ) {
+                $.each(data.updates.updates, function( index, update ) {
                     var date_formatted = moment(update.date).format(js_date_format);
                     var newUpdate = '<li><strong class="wp-client-reports-name">' + update.name + '</strong><span class="wp-client-reports-from-to">' + update.version_before + ' <span class="dashicons dashicons-arrow-right-alt"></span> ' + update.version_after + '</span><span class="wp-client-reports-date">' + date_formatted + '</span></li>';
                     if (update.type == 'wp') {
@@ -204,14 +198,18 @@
                         $("#wp-client-reports-theme-updates-list").append(newUpdate)
                     }
                 });
-                if (data.wp_updated === 0) {
+                if (data.updates.wp_updated === 0) {
                     $("#wp-client-reports-wp-updates-list").append('<li class="wp-client-reports-empty">No WordPress Updates</li>');
                 }
-                if (data.total_plugins_updated === 0) {
+                if (data.updates.total_plugins_updated === 0) {
                     $("#wp-client-reports-plugin-updates-list").append('<li class="wp-client-reports-empty">No Plugin Updates</li>');
-                }if (data.total_themes_updated === 0) {
+                }
+                if (data.updates.total_themes_updated === 0) {
                     $("#wp-client-reports-theme-updates-list").append('<li class="wp-client-reports-empty">No Theme Updates</li>');
                 }
+
+                $(document).trigger('wp_client_reports_js_data', [data]);
+
             }
         });
     }
