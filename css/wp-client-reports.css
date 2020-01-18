@@ -232,3 +232,49 @@
 .wp-client-report-border-top {
     border-top: 1px solid #ccd0d4;
 }
+
+.wp-client-reports-settings-postbox .inside {
+    margin:0px;
+    padding:0px;
+}
+.wp-client-reports-settings-postbox .inside h2 {
+    display:none;
+}
+
+.wp-client-reports-settings-postbox .form-table {
+    display:block;
+    margin:0px;
+    width:100%;
+}
+.wp-client-reports-settings-postbox .form-table tbody {
+    display:block;
+    width:100%;
+}
+.wp-client-reports-settings-postbox .form-table tr {
+    display:block;
+    width:100%;
+}
+.wp-client-reports-settings-postbox .form-table tr:first-child th,
+.wp-client-reports-settings-postbox .form-table tr:first-child td {
+    border-top:0px;
+}
+.wp-client-reports-settings-postbox .form-table th {
+    display:block;
+    padding: 15px 12px 4px;
+    border-top: #EEEEEE solid 1px;
+}
+.wp-client-reports-settings-postbox .form-table td {
+    display:block;
+    padding: 4px 12px 15px;
+    margin:0px;
+}
+.wp-client-reports-settings-postbox .form-table .regular-text,
+.wp-client-reports-settings-postbox .form-table input.large-text, 
+.wp-client-reports-settings-postbox .form-table textarea.large-text {
+    width:100%;
+}
+
+#wp-client-reports-options #publishing-action p.submit {
+    margin:0px;
+    padding:0px;
+}

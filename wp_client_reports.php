@@ -779,7 +779,7 @@ function wp_client_reports_default_intro_render(  ) {
  * Settings section help
  */
 function wp_client_reports_settings_section_callback(  ) {
-	echo __( 'You can update the default email address(es) of whom will recieve client reports when you send them. If there are multiple emails, they should use a comma and a space to separate them.', 'wp-client-reports' );
+	//Print nothing
 }
 
 
@@ -788,14 +788,51 @@ function wp_client_reports_settings_section_callback(  ) {
  */
 function wp_client_reports_options_page(  ) {
 	?>
-    <div class="wrap">
+    <div class="wrap" id="wp-client-reports-options">
         <h1><?php _e('WP Client Reports Options','wp-client-reports'); ?></h1>
         <form action='options.php' method='post'>
-            <?php
-            settings_fields( 'wp_client_reports_options_page' );
-            do_settings_sections( 'wp_client_reports_options_page' );
-            submit_button();
-            ?>
+            <div id="poststuff">
+                <div id="post-body" class="metabox-holder columns-2">
+                    <div id="postbox-container-1" class="postbox-container">
+                        <div id="submitdiv" class="postbox">
+                            <h2 class="hndle"><span><?php _e('Publish', 'wp-client-reports'); ?></span></h2>
+                            <div class="inside">
+                                <div id="major-publishing-actions">
+                                    <div id="publishing-action">
+                                        <?php submit_button('Save Settings'); ?>
+                                    </div><!-- #publishing-action -->
+                                    <div class="clear"></div>
+                                </div><!-- #major-publishing-actions -->
+                            </div><!-- .inside -->
+                        </div><!-- #submitdiv -->
+                        <div id="bugs-features" class="postbox">
+                            <div class="inside">
+                                <p>
+                                    <?php
+                                        $sitelink = "<a href='https://switchwp.com/plugins/wp-client-reports/' target='_blank'>";
+                                        $githublink = "<a href='https://github.com/TheJester12/wp-client-reports' target='_blank'>";
+                                        $pluginlink = "<a href='https://wordpress.org/plugins/wp-client-reports/' target='_blank'>";
+                                        $endlink = "</a>";
+                                        printf( __( 'Learn more about the plugin and its capabilities on the %1$sSwitchWP website%2$s. Found a bug or have a feature request? Let me know on the %3$sWP plugin directory%4$s, or send a pull request on %5$sGitHub%6$s.', 'wp-client-reports' ), $sitelink, $endlink, $pluginlink, $endlink, $githublink, $endlink );
+                                    ?>
+                                </p>
+                            </div>
+                        </div><!-- #bugs-features -->
+                    </div><!-- .postbox-container -->
+                    <div id="postbox-container-2" class="postbox-container">
+                        <div class="postbox wp-client-reports-settings-postbox">
+                            <h2 class="hndle"><span>General Settings</span></h2>
+                            <div class="inside">
+                                <?php
+                                    settings_fields( 'wp_client_reports_options_page' );
+                                    do_settings_sections( 'wp_client_reports_options_page' );
+                                ?>
+                            </div><!-- .inside -->
+                        </div><!-- .postbox -->
+                    </div><!-- .postbox-container -->
+                </div><!-- #post-body -->
+                <br class="clear">
+            </div><!-- #poststuff -->
         </form>
     </div><!-- .wrap -->
 	<?php
