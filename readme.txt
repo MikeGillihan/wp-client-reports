@@ -13,12 +13,13 @@ Track your WordPress Core Updates, Plugin Updates, and Theme Updates. View updat
 
 == Description ==
 
-The perfect plugin for agencies and site maintainers who regularly update WordPress and it's themes and plugins on a weekly, monthly, or quarterly basis. The plugin tracks what daily updates have happened and records them. 
+The perfect report builder plugin for agencies and site maintainers who regularly update WordPress including its themes and plugins on a weekly, monthly, or quarterly basis. The plugin tracks what daily updates have happened and records them.
 
-You can use the beautiful reporting page to show what updates have happened within a certain amount of time such as last month, this month, or last 30 days. 
+You can use the beautiful reporting analytics page to show what updates have happened within a certain amount of time such as last month, this month, or last 30 days.
 
 Send an HTML email with update statistics whenever you complete updates to show the value of your work to your client or other site stakeholders.
 
+Have an idea that should be added? Let us know at [SwitchWP](https://switchwp.com/plugins/wp-client-reports/).
 
 == Installation ==
 
@@ -41,14 +42,17 @@ With this basic version there isn't a lot to customize. We are working on adding
 
 == Screenshots ==
 
-1. An example of a custom post type archive page.
-2. Settings for each custom post type that has an archive.
-3. Settings for categories, taxonomies, and custom taxonomies.
-4. For custom post types, give your editors the ability to edit archive headlines, a featured image, and content before and after the list.
-5. For taxonomies, give your editors the ability to add a featured image, content before and after the list, and customize order and pagination per term.
+1. The WP Client Reports main report screen
+2. Easily switch dates to view states for any time period
+3. Send an html email with friendly statistics to your client
+3. Adds an optional dashboard widget
+4. Preset email and a an introduction message
 
 
 == Changelog ==
+
+= 1.0.2 =
+* Rethink data loading for report page and email
 
 = 1.0.1 =
 * Security enhancements

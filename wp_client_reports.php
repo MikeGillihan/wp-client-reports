@@ -3,7 +3,7 @@
 Plugin Name: WP Client Reports
 Plugin URI: https://switchwp.com/wp-client-reports/
 Description: Track Plugin and Theme Updates and send them as Client Reports
-Version: 1.0
+Version: 1.0.2
 Author: Jesse Sutherland
 Author URI: http://jessesutherland.com/
 Text Domain: wp-client-reports
@@ -286,19 +286,19 @@ function wp_client_reports_last30_widget_function() {
     }
     $start_date = date('Y-m-d', strtotime('-30 days'));
     $end_date = date('Y-m-d');
-    $data = wp_client_reports_get_stats_data($start_date, $end_date);
+    $updates_data = wp_client_reports_get_updates_data($start_date, $end_date);
     ?>
     <div class="wp-client-reports-big-numbers wp-client-reports-postbox wp-client-reports-last30-widget">
         <div class="wp-client-reports-big-number">
-            <h2 id="wp-client-reports-wp-update-count"><?php echo esc_html($data->updates->wp_updated); ?></h2>
+            <h2 id="wp-client-reports-wp-update-count"><?php echo esc_html($updates_data->wp_updated); ?></h2>
             <h3><?php printf( __( 'WordPress %s Updates', 'wp-client-reports' ), '<br>' ); ?></h3>
         </div><!-- .wp-client-reports-big-number -->
         <div class="wp-client-reports-big-number">
-            <h2 id="wp-client-reports-theme-update-count"><?php echo esc_html($data->updates->total_themes_updated); ?></h2>
+            <h2 id="wp-client-reports-theme-update-count"><?php echo esc_html($updates_data->total_themes_updated); ?></h2>
             <h3><?php printf( __( 'Theme %s Updates', 'wp-client-reports' ), '<br>' ); ?></h3>
         </div><!-- .wp-client-reports-big-number -->
         <div class="wp-client-reports-big-number">
-            <h2 id="wp-client-reports-plugin-update-count"><?php echo esc_html($data->updates->total_plugins_updated); ?></h2>
+            <h2 id="wp-client-reports-plugin-update-count"><?php echo esc_html($updates_data->total_plugins_updated); ?></h2>
             <h3><?php printf( __( 'Plugin %s Updates', 'wp-client-reports' ), '<br>' ); ?></h3>
         </div><!-- .wp-client-reports-big-number -->
     </div><!-- .wp-client-reports-last30-widget -->
@@ -311,7 +311,7 @@ function wp_client_reports_last30_widget_function() {
  */
 add_action( 'admin_menu', 'wp_client_reports_add_admin_menu' );
 function wp_client_reports_add_admin_menu(  ) {
-    add_options_page( 'WP Client Report Options', 'WP Client Report Options', 'manage_options', 'wp_client_reports', 'wp_client_reports_options_page' );
+    add_options_page( 'WP Client Reports Settings', 'WP Client Reports', 'manage_options', 'wp_client_reports', 'wp_client_reports_options_page' );
     add_submenu_page( 'index.php', 'Reports', 'Reports', 'manage_options', 'wp_client_reports', 'wp_client_reports_stats_page');
 }
 
@@ -354,84 +354,99 @@ function wp_client_reports_stats_page() {
                 </div><!-- .wp-client-reports-date-chooser-area -->
             </div><!-- .wp-client-reports-header -->
 
-            <div class="metabox-holder">
-                <div class="postbox wp-client-reports-postbox" id="wp-client-reports-updates">
-                    <button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text"><?php _e('Toggle panel','wp-client-reports'); ?>: <?php _e('Software Updates','wp-client-reports'); ?></span><span class="toggle-indicator" aria-hidden="true"></span></button><h2 class="hndle ui-sortable-handle"><span><?php _e('Software Updates','wp-client-reports'); ?></span></h2>
-                    <div class="inside">
-                        <div class="main">
-                            <div class="wp-client-reports-big-numbers">
-                                <div class="wp-client-reports-big-number">
-                                    <h2 id="wp-client-reports-total-update-count">0</h2>
-                                    <h3><?php printf( __( 'Total %s Updates', 'wp-client-reports' ), '<br>' ); ?></h3>
-                                </div><!-- .wp-client-reports-big-number -->
-                                <div class="wp-client-reports-big-number">
-                                    <h2 id="wp-client-reports-wp-update-count">0</h2>
-                                    <h3><?php printf( __( 'WordPress %s Updates', 'wp-client-reports' ), '<br>' ); ?></h3>
-                                </div><!-- .wp-client-reports-big-number -->
-                                <div class="wp-client-reports-big-number">
-                                    <h2 id="wp-client-reports-plugin-update-count">0</h2>
-                                    <h3><?php printf( __( 'Plugin %s Updates', 'wp-client-reports' ), '<br>' ); ?></h3>
-                                </div><!-- .wp-client-reports-big-number -->
-                                <div class="wp-client-reports-big-number">
-                                    <h2 id="wp-client-reports-theme-update-count">0</h2>
-                                    <h3><?php printf( __( 'Theme %s Updates', 'wp-client-reports' ), '<br>' ); ?></h3>
-                                </div><!-- .wp-client-reports-big-number -->
-                            </div><!-- .wp-client-reports-big-numbers -->
-
-                            <div class="wp-client-report-section wp-client-report-border-top">
-
-                                <h3><?php _e('WordPress Updates','wp-client-reports'); ?></h3>
-                                <ul id="wp-client-reports-wp-updates-list" class="wp-client-reports-list"></ul>
-
-                            </div>
-                            <div class="wp-client-report-section wp-client-report-border-top">
-
-                                <h3><?php _e('Plugin Updates','wp-client-reports'); ?></h3>
-                                <ul id="wp-client-reports-plugin-updates-list" class="wp-client-reports-list"></ul>
-
-                            </div>
-                            <div class="wp-client-report-section wp-client-report-border-top">
-
-                                <h3><?php _e('Theme Updates','wp-client-reports'); ?></h3>
-                                <ul id="wp-client-reports-theme-updates-list" class="wp-client-reports-list"></ul>
-
-                            </div><!-- .wp-client-report-section -->
-                            
-
-                            <div id="wp-client-reports-which-email-modal" class="wp-client-reports-which-email-modal" style="display:none;">
-                                <form method="GET" action="#" id="wp-client-reports-send-email-report">
-                                    <table class="form-table" role="presentation">
-                                        <tbody>
-                                            <tr>
-                                                <th scope="row"><label for="report-email"><?php _e('Send Email To','wp-client-reports'); ?></label></th>
-                                                <td><input name="report_email" type="email" id="report-email" value="<?php echo esc_attr($default_email); ?>" class="regular-text"></td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row"><label for="report-intro"><?php _e('Email Introduction','wp-client-reports'); ?></label></th>
-                                                <td><textarea name="report_intro" id="report-intro" class="large-text"><?php echo esc_attr($default_intro); ?></textarea></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <input type="hidden" name="action" value="wp_client_reports_send_email_report">
-                                    <input type="hidden" name="start" class="from_value" id="start_date_email">
-                                    <input type="hidden" name="end" class="to_value" id="end_date_email">
-                                    <p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Send Now"></p>
-                                </form>
-                            </div><!-- #wp-client-reports-which-email-modal -->
-
-                        </div><!-- .inside -->
-                    </div><!-- .main -->
-                </div><!-- .postbox -->
-            </div><!-- .metabox-holder -->
-
             <?php do_action('wp_client_reports_stats'); ?>
 
             <?php if ( !is_plugin_active( 'wp-client-reports-pro/wp_client_reports_pro.php' ) ) : ?>
                 <p style="margin: 20px 0;text-align:center;">Report created with <a href="https://switchwp.com/plugins/wp-client-reports/" target="_blank">WP Client Reports</a>.</p>
             <?php endif; ?>
 
+            <div id="wp-client-reports-which-email-modal" class="wp-client-reports-which-email-modal" style="display:none;">
+                <form method="GET" action="#" id="wp-client-reports-send-email-report">
+                    <table class="form-table" role="presentation">
+                        <tbody>
+                            <tr>
+                                <th scope="row"><label for="report-email"><?php _e('Send Email To','wp-client-reports'); ?></label></th>
+                                <td><input name="report_email" type="email" id="report-email" value="<?php echo esc_attr($default_email); ?>" class="regular-text"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><label for="report-intro"><?php _e('Email Introduction','wp-client-reports'); ?></label></th>
+                                <td><textarea name="report_intro" id="report-intro" class="large-text"><?php echo esc_attr($default_intro); ?></textarea></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input type="hidden" name="action" value="wp_client_reports_send_email_report">
+                    <input type="hidden" name="start" class="from_value" id="start_date_email">
+                    <input type="hidden" name="end" class="to_value" id="end_date_email">
+                    <p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Send Now"></p>
+                </form>
+                <div class="notice notice-success wp-client-reports-success" id="wp-client-reports-report-status" style="display:none;margin-top:26px;">
+                    <p><?php _e( 'Report has been sent!', 'wp-client-reports' ); ?></p>
+                </div>
+            </div><!-- #wp-client-reports-which-email-modal -->
+
         </div><!-- .wp-client-reports-stats-screen -->
 	<?php
+}
+
+
+/**
+ * Stats page for updates
+ */
+add_action('wp_client_reports_stats', 'wp_client_reports_stats_page_updates', 10);
+function wp_client_reports_stats_page_updates() {
+    $enabled = get_option( 'wp_client_reports_enable_updates' );
+    if ($enabled == 'on') {
+    ?>
+    <div class="metabox-holder">
+        <div class="postbox wp-client-reports-postbox" id="wp-client-reports-updates">
+            <button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text"><?php _e('Toggle panel','wp-client-reports'); ?>: <?php _e('Software Updates','wp-client-reports'); ?></span><span class="toggle-indicator" aria-hidden="true"></span></button><h2 class="hndle ui-sortable-handle"><span><?php _e('Software Updates','wp-client-reports'); ?></span></h2>
+            <div class="inside">
+                <div class="main">
+                    <div class="wp-client-reports-big-numbers">
+                        <div class="wp-client-reports-big-number">
+                            <h2 id="wp-client-reports-total-update-count">0</h2>
+                            <h3><?php printf( __( 'Total %s Updates', 'wp-client-reports' ), '<br>' ); ?></h3>
+                        </div><!-- .wp-client-reports-big-number -->
+                        <div class="wp-client-reports-big-number">
+                            <h2 id="wp-client-reports-wp-update-count">0</h2>
+                            <h3><?php printf( __( 'WordPress %s Updates', 'wp-client-reports' ), '<br>' ); ?></h3>
+                        </div><!-- .wp-client-reports-big-number -->
+                        <div class="wp-client-reports-big-number">
+                            <h2 id="wp-client-reports-plugin-update-count">0</h2>
+                            <h3><?php printf( __( 'Plugin %s Updates', 'wp-client-reports' ), '<br>' ); ?></h3>
+                        </div><!-- .wp-client-reports-big-number -->
+                        <div class="wp-client-reports-big-number">
+                            <h2 id="wp-client-reports-theme-update-count">0</h2>
+                            <h3><?php printf( __( 'Theme %s Updates', 'wp-client-reports' ), '<br>' ); ?></h3>
+                        </div><!-- .wp-client-reports-big-number -->
+                    </div><!-- .wp-client-reports-big-numbers -->
+
+                    <div class="wp-client-report-section wp-client-report-border-top">
+
+                        <h3><?php _e('WordPress Updates','wp-client-reports'); ?></h3>
+                        <ul id="wp-client-reports-wp-updates-list" class="wp-client-reports-list"></ul>
+
+                    </div>
+                    <div class="wp-client-report-section wp-client-report-border-top">
+
+                        <h3><?php _e('Plugin Updates','wp-client-reports'); ?></h3>
+                        <ul id="wp-client-reports-plugin-updates-list" class="wp-client-reports-list"></ul>
+
+                    </div>
+                    <div class="wp-client-report-section wp-client-report-border-top">
+
+                        <h3><?php _e('Theme Updates','wp-client-reports'); ?></h3>
+                        <ul id="wp-client-reports-theme-updates-list" class="wp-client-reports-list"></ul>
+
+                    </div><!-- .wp-client-report-section -->
+
+                </div><!-- .inside -->
+            </div><!-- .main -->
+        </div><!-- .postbox -->
+
+    </div><!-- .metabox-holder -->
+    <?php
+    }
 }
 
 
@@ -461,16 +476,16 @@ function wp_client_reports_updates_data() {
 
 function wp_client_reports_validate_dates($start, $end) {
     $dates = new \stdClass;
+    $timezone_string = get_option('timezone_string');
+    if ($timezone_string) {
+        date_default_timezone_set($timezone_string);
+    }
     if (isset($start) && isset($end)) {
         $start_date_object = date_create_from_format('Y-m-d', $start);
         $dates->start_date = $start_date_object->format('Y-m-d');
         $end_date_object = date_create_from_format('Y-m-d', $end);
         $dates->end_date = $end_date_object->format('Y-m-d');
     } else {
-        $timezone_string = get_option('timezone_string');
-        if ($timezone_string) {
-            date_default_timezone_set($timezone_string);
-        }
         $dates->start_date = date('Y-m-d', strtotime('-30 days'));
         $dates->end_date = date('Y-m-d');
     }
@@ -537,6 +552,107 @@ function wp_client_reports_force_update() {
     wp_client_reports_check_for_updates();
     print json_encode(['status'=>'success']);
     wp_die();
+}
+
+
+/**
+ * Ajax call for stats data
+ */
+add_action('wp_ajax_wp_client_reports_content_stats_data', 'wp_client_reports_content_stats_data');
+function wp_client_reports_content_stats_data() {
+
+    $start = null;
+    $end = null;
+    if (isset($_GET['start'])) {
+        $start = sanitize_text_field($_GET['start']);
+    }
+    if (isset($_GET['end'])) {
+        $end = sanitize_text_field($_GET['end']);
+    }
+
+    $dates = wp_client_reports_validate_dates($start, $end);
+
+    $data = wp_client_reports_get_content_stats_data($dates->start_date, $dates->end_date);
+
+    print json_encode($data);
+    wp_die();
+
+}
+
+
+/**
+ * Get the stats data from the database
+ */
+function wp_client_reports_get_content_stats_data($start_date, $end_date) {
+
+    global $wpdb;
+    $posts_table_name = $wpdb->prefix . 'posts';
+    $comments_table_name = $wpdb->prefix . 'comments';
+
+    $data = new \stdClass;
+
+    $posts_count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $posts_table_name WHERE `post_status` = 'publish' AND `post_type` = 'post' AND `post_date_gmt` >= %s AND `post_date_gmt` <= %s", array($start_date . ' 00:00:00', $end_date . ' 23:59:59') ) );
+
+    $pages_count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $posts_table_name WHERE `post_status` = 'publish' AND `post_type` = 'page' AND `post_date_gmt` >= %s AND `post_date_gmt` <= %s", array($start_date . ' 00:00:00', $end_date . ' 23:59:59') ) );
+
+    $comments_count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $comments_table_name WHERE `comment_approved` = 1 AND `comment_type` = '' AND `comment_date_gmt` >= %s AND `comment_date_gmt` <= %s", array($start_date . ' 00:00:00', $end_date . ' 23:59:59') ) );
+
+    $data = new \stdClass;
+    $data->posts_count = $posts_count;
+    $data->pages_count = $pages_count;
+    $data->comments_count = $comments_count;
+
+    $data = apply_filters( 'wp_client_reports_content_stats_data', $data, $start_date, $end_date );
+
+    return $data;
+    
+}
+
+
+add_filter('wp_client_reports_email_data', 'wp_client_reports_email_content_stats_data', 11, 3);
+function wp_client_reports_email_content_stats_data($data, $start_date, $end_date) {
+    $updates = new \stdClass;
+    $updates = wp_client_reports_get_content_stats_data($start_date, $end_date);
+    $data->updates = $updates;
+    return $data;
+}
+
+
+/**
+ * Stats page for updates
+ */
+add_action('wp_client_reports_stats', 'wp_client_reports_stats_page_content', 30);
+function wp_client_reports_stats_page_content() {
+    $enabled = get_option( 'wp_client_reports_enable_content_stats' );
+    if ($enabled == 'on') {
+    ?>
+        <div class="metabox-holder">
+            <div class="postbox wp-client-reports-postbox" id="wp-client-reports-content-stats">
+                <button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text"><?php _e('Toggle panel','wp-client-reports'); ?>: <?php _e('Site Content','wp-client-reports'); ?></span><span class="toggle-indicator" aria-hidden="true"></span></button><h2 class="hndle ui-sortable-handle"><span><?php _e('Site Content','wp-client-reports'); ?></span></h2>
+                <div class="inside">
+                    <div class="main">
+                        <div class="wp-client-reports-big-numbers">
+                            <div class="wp-client-reports-big-number">
+                                <h2 id="wp-client-reports-new-posts-count">0</h2>
+                                <h3><?php printf( __( 'Posts %s Added', 'wp-client-reports' ), '<br>' ); ?></h3>
+                            </div><!-- .wp-client-reports-big-number -->
+                            <div class="wp-client-reports-big-number">
+                                <h2 id="wp-client-reports-new-pages-count">0</h2>
+                                <h3><?php printf( __( 'Pages %s Added', 'wp-client-reports' ), '<br>' ); ?></h3>
+                            </div><!-- .wp-client-reports-big-number -->
+                            <div class="wp-client-reports-big-number">
+                                <h2 id="wp-client-reports-new-comments-count">0</h2>
+                                <h3><?php printf( __( 'Comments %s Added', 'wp-client-reports' ), '<br>' ); ?></h3>
+                            </div><!-- .wp-client-reports-big-number -->
+                        </div><!-- .wp-client-reports-big-numbers -->
+
+                    </div><!-- .inside -->
+                </div><!-- .main -->
+            </div><!-- .postbox -->
+
+        </div><!-- .metabox-holder -->
+    <?php
+    }
 }
 
 
@@ -626,7 +742,7 @@ function wp_client_reports_send_email_report() {
     
     $body = ob_get_clean();
         
-    $subject = get_bloginfo('name') . __('Site Report','wp-client-reports');
+    $subject = get_bloginfo('name') . ' ' . __('Site Report','wp-client-reports');
     $headers[] = 'Content-Type: text/html; charset=UTF-8';
     $headers[] = 'From: ' . get_bloginfo('name') . ' <' . get_bloginfo('admin_email') . '>';
     
@@ -637,107 +753,168 @@ function wp_client_reports_send_email_report() {
 /**
  * Stats page for updates
  */
-add_action('wp_client_reports_stats_email', 'wp_client_reports_pro_stats_email_updates', 10, 2);
-function wp_client_reports_pro_stats_email_updates($start_date, $end_date) {
-    $brand_color = wp_client_reports_get_brand_color();
-    $updates_data = wp_client_reports_get_updates_data($start_date, $end_date);
-    $date_format = get_option('date_format');
-    ?>
-    <!-- start copy -->
-        <tr>
-            <td align="left" bgcolor="#ffffff" style="padding: 0px 40px 0px 40px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
-                <h5 style="font-weight:bold; font-size: 16px; line-height:18px; padding-bottom:10px; margin: 15px 0px 10px;border-bottom:solid 1px #ddd;"><?php _e( 'Software Updates', 'wp-client-reports' ); ?></h5>
-            </td>
-        </tr>
-        <!-- end copy -->
-        
+add_action('wp_client_reports_stats_email', 'wp_client_reports_stats_email_updates', 10, 2);
+function wp_client_reports_stats_email_updates($start_date, $end_date) {
+    $enabled = get_option( 'wp_client_reports_enable_updates' );
+    if ($enabled == 'on') {
+        $brand_color = wp_client_reports_get_brand_color();
+        $updates_data = wp_client_reports_get_updates_data($start_date, $end_date);
+        $date_format = get_option('date_format');
+        ?>
         <!-- start copy -->
-        <tr>
-            <td align="left" bgcolor="#ffffff" style="padding: 0px 40px 0px 40px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                <td align="center" width="250" style="padding: 20px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
-                    <h1 style="font-weight: bold; color: <?php echo $brand_color; ?>; margin: 0px; font-size: 66px; line-height: 1em;"><?php echo esc_html($updates_data->total_updates); ?></h1>
-                    <h5 style="text-transform: uppercase; color: #888888; font-size: 16px; line-height:18px; font-weight: 300; margin: 0px;"><?php printf( __( 'Total %s Updates', 'wp-client-reports' ), '<br>' ); ?></h5>
+            <tr>
+                <td align="left" bgcolor="#ffffff" style="padding: 0px 40px 0px 40px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
+                    <h5 style="font-weight:bold; font-size: 16px; line-height:18px; padding-bottom:10px; margin: 15px 0px 10px;border-bottom:solid 1px #ddd;"><?php _e( 'Software Updates', 'wp-client-reports' ); ?></h5>
                 </td>
-                <td bgcolor="#ffffff" align="center" width="20">&nbsp;</td>
-                <td align="center" width="250" style="padding: 20px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
-                    <h1 style="font-weight: bold; color: <?php echo $brand_color; ?>; margin: 0px; font-size: 66px; line-height: 1em;"><?php echo esc_html($updates_data->wp_updated); ?></h1>
-                    <h5 style="text-transform: uppercase; color: #888888; font-size: 16px; line-height:18px; font-weight: 300; margin: 0px;"><?php printf( __( 'WordPress %s Updates', 'wp-client-reports' ), '<br>' ); ?></h5>
+            </tr>
+            <!-- end copy -->
+            
+            <!-- start copy -->
+            <tr>
+                <td align="left" bgcolor="#ffffff" style="padding: 0px 40px 0px 40px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <td align="center" width="250" style="padding: 20px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
+                        <h1 style="font-weight: bold; color: <?php echo $brand_color; ?>; margin: 0px; font-size: 66px; line-height: 1em;"><?php echo esc_html($updates_data->total_updates); ?></h1>
+                        <h5 style="text-transform: uppercase; color: #888888; font-size: 16px; line-height:18px; font-weight: 300; margin: 0px;"><?php printf( __( 'Total %s Updates', 'wp-client-reports' ), '<br>' ); ?></h5>
+                    </td>
+                    <td bgcolor="#ffffff" align="center" width="20">&nbsp;</td>
+                    <td align="center" width="250" style="padding: 20px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
+                        <h1 style="font-weight: bold; color: <?php echo $brand_color; ?>; margin: 0px; font-size: 66px; line-height: 1em;"><?php echo esc_html($updates_data->wp_updated); ?></h1>
+                        <h5 style="text-transform: uppercase; color: #888888; font-size: 16px; line-height:18px; font-weight: 300; margin: 0px;"><?php printf( __( 'WordPress %s Updates', 'wp-client-reports' ), '<br>' ); ?></h5>
+                    </td>
+                    </table>
                 </td>
+            </tr>
+            <!-- end copy -->
+
+            <!-- start copy -->
+            <tr>
+                <td align="left" bgcolor="#ffffff" style="padding: 0px 40px 0px 40px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <td align="center" width="250" style="padding: 20px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
+                        <h1 style="font-weight: bold; color: <?php echo $brand_color; ?>; margin: 0px; font-size: 66px; line-height: 1em;"><?php echo esc_html($updates_data->total_themes_updated); ?></h1>
+                        <h5 style="text-transform: uppercase; color: #888888; font-size: 16px; line-height:18px; font-weight: 300; margin: 0px;"><?php printf( __( 'Theme %s Updates', 'wp-client-reports' ), '<br>' ); ?></h5>
+                    </td>
+                    <td bgcolor="#ffffff" align="center" width="20">&nbsp;</td>
+                    <td align="center" width="250" style="padding: 20px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
+                        <h1 style="font-weight: bold; color: <?php echo $brand_color; ?>; margin: 0px; font-size: 66px; line-height: 1em;"><?php echo esc_html($updates_data->total_plugins_updated); ?></h1>
+                        <h5 style="text-transform: uppercase; color: #888888; font-size: 16px; line-height:18px; font-weight: 300; margin: 0px;"><?php printf( __( 'Plugin %s Updates', 'wp-client-reports' ), '<br>' ); ?></h5>
+                    </td>
+                    </table>
+                </td>
+            </tr>
+            <!-- end copy -->
+            
+            <!-- start copy -->
+            <tr>
+            <td bgcolor="#ffffff" align="left" style="padding: 20px 40px 40px 40px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 14px; line-height: 20px;">
+                <h3 style="font-size:14px;margin:0px 0px 4px 0px;"><?php _e('WordPress Updates','wp-client-reports'); ?></h3>
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-top:solid 1px #dddddd;margin-bottom:30px;">
+                <?php
+                if ($updates_data->wp_updated > 0) : 
+                    foreach($updates_data->updates as $update) :
+                        if ($update->type == 'wp') :
+                            echo '<tr><td style="width:40%;padding:8px 8px 8px 0px;border-bottom:solid 1px #dddddd;">' . esc_html($update->name) . '</td><td style="text-align:center;width:30%;padding:8px;border-bottom:solid 1px #dddddd;"">' . esc_html($update->version_before) . ' -> ' . esc_html($update->version_after) . '</td><td style="text-align:right;width:30%;padding:8px 0px 8px 8px;border-bottom:solid 1px #dddddd;"">' . esc_html(date($date_format, strtotime($update->date))) . '</td>';
+                        endif;
+                    endforeach;
+                else:
+                    echo '<tr><td style="width:40%;padding:8px 0px 8px 0px;border-bottom:solid 1px #dddddd;">No WordPress Updates</td>';
+                endif;
+                ?>
+                </table>
+
+                <h3 style="font-size:14px;margin:0px 0px 4px 0px;"><?php _e('Plugin Updates','wp-client-reports'); ?></h3>
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-top:solid 1px #dddddd;margin-bottom:30px;">
+                <?php 
+                if ($updates_data->total_plugins_updated > 0) : 
+                    foreach($updates_data->updates as $update) :
+                        if ($update->type == 'plugin') :
+                            echo '<tr><td style="width:40%;padding:8px 8px 8px 0px;border-bottom:solid 1px #dddddd;">' . esc_html($update->name) . '</td><td style="text-align:center;width:30%;padding:8px;border-bottom:solid 1px #dddddd;"">' . esc_html($update->version_before) . ' -> ' . esc_html($update->version_after) . '</td><td style="text-align:right;width:30%;padding:8px 0px 8px 8px;border-bottom:solid 1px #dddddd;"">' . esc_html(date($date_format, strtotime($update->date))) . '</td>';
+                        endif;
+                    endforeach;
+                else:
+                    echo '<tr><td style="width:40%;padding:8px 0px 8px 0px;border-bottom:solid 1px #dddddd;">No Plugin Updates</td>';
+                endif;
+                ?>
+                </table>
+
+                <h3 style="font-size:14px;margin:0px 0px 4px 0px;"><?php _e('Theme Updates','wp-client-reports'); ?></h3>
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-top:solid 1px #dddddd;margin-bottom:20px;">
+                <?php 
+                if ($updates_data->total_themes_updated > 0) : 
+                    foreach($updates_data->updates as $update) :
+                        if ($update->type == 'theme') :
+                            echo '<tr><td style="width:40%;padding:8px 8px 8px 0px;border-bottom:solid 1px #dddddd;">' . esc_html($update->name) . '</td><td style="text-align:center;width:30%;padding:8px;border-bottom:solid 1px #dddddd;"">' . esc_html($update->version_before) . ' -> ' . esc_html($update->version_after) . '</td><td style="text-align:right;width:30%;padding:8px 0px 8px 8px;border-bottom:solid 1px #dddddd;"">' . esc_html(date($date_format, strtotime($update->date))) . '</td>';
+                        endif;
+                    endforeach;
+                else:
+                    echo '<tr><td style="width:40%;padding:8px 0px 8px 0px;border-bottom:solid 1px #dddddd;">No Theme Updates</td>';
+                endif;
+                ?>
                 </table>
             </td>
-        </tr>
-        <!-- end copy -->
+            </tr>
+            <!-- end copy -->
+        <?php
+    }
+}
 
+
+/**
+ * Stats page for updates
+ */
+add_action('wp_client_reports_stats_email', 'wp_client_reports_stats_email_content', 30, 2);
+function wp_client_reports_stats_email_content($start_date, $end_date) {
+    $enabled = get_option( 'wp_client_reports_enable_content_stats' );
+    if ($enabled == 'on') {
+        $brand_color = wp_client_reports_get_brand_color();
+        $updates_data = wp_client_reports_get_content_stats_data($start_date, $end_date);
+        $date_format = get_option('date_format');
+        ?>
         <!-- start copy -->
-        <tr>
-            <td align="left" bgcolor="#ffffff" style="padding: 0px 40px 0px 40px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                <td align="center" width="250" style="padding: 20px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
-                    <h1 style="font-weight: bold; color: <?php echo $brand_color; ?>; margin: 0px; font-size: 66px; line-height: 1em;"><?php echo esc_html($updates_data->total_themes_updated); ?></h1>
-                    <h5 style="text-transform: uppercase; color: #888888; font-size: 16px; line-height:18px; font-weight: 300; margin: 0px;"><?php printf( __( 'Theme %s Updates', 'wp-client-reports' ), '<br>' ); ?></h5>
+            <tr>
+                <td align="left" bgcolor="#ffffff" style="padding: 0px 40px 0px 40px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
+                    <h5 style="font-weight:bold; font-size: 16px; line-height:18px; padding-bottom:10px; margin: 15px 0px 10px;border-bottom:solid 1px #ddd;"><?php _e( 'Site Content', 'wp-client-reports' ); ?></h5>
                 </td>
-                <td bgcolor="#ffffff" align="center" width="20">&nbsp;</td>
-                <td align="center" width="250" style="padding: 20px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
-                    <h1 style="font-weight: bold; color: <?php echo $brand_color; ?>; margin: 0px; font-size: 66px; line-height: 1em;"><?php echo esc_html($updates_data->total_plugins_updated); ?></h1>
-                    <h5 style="text-transform: uppercase; color: #888888; font-size: 16px; line-height:18px; font-weight: 300; margin: 0px;"><?php printf( __( 'Plugin %s Updates', 'wp-client-reports' ), '<br>' ); ?></h5>
+            </tr>
+            <!-- end copy -->
+            
+            <!-- start copy -->
+            <tr>
+                <td align="left" bgcolor="#ffffff" style="padding: 0px 40px 0px 40px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <td align="center" width="250" style="padding: 20px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
+                        <h1 style="font-weight: bold; color: <?php echo $brand_color; ?>; margin: 0px; font-size: 66px; line-height: 1em;"><?php echo esc_html($updates_data->posts_count); ?></h1>
+                        <h5 style="text-transform: uppercase; color: #888888; font-size: 16px; line-height:18px; font-weight: 300; margin: 0px;"><?php printf( __( 'Posts %s Added', 'wp-client-reports' ), '<br>' ); ?></h5>
+                    </td>
+                    <td bgcolor="#ffffff" align="center" width="20">&nbsp;</td>
+                    <td align="center" width="250" style="padding: 20px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
+                        <h1 style="font-weight: bold; color: <?php echo $brand_color; ?>; margin: 0px; font-size: 66px; line-height: 1em;"><?php echo esc_html($updates_data->pages_count); ?></h1>
+                        <h5 style="text-transform: uppercase; color: #888888; font-size: 16px; line-height:18px; font-weight: 300; margin: 0px;"><?php printf( __( 'Pages %s Added', 'wp-client-reports' ), '<br>' ); ?></h5>
+                    </td>
+                    </table>
                 </td>
-                </table>
-            </td>
-        </tr>
-        <!-- end copy -->
-        
-        <!-- start copy -->
-        <tr>
-        <td bgcolor="#ffffff" align="left" style="padding: 20px 40px 40px 40px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 14px; line-height: 20px;">
-            <h3 style="font-size:14px;margin:0px 0px 4px 0px;"><?php _e('WordPress Updates','wp-client-reports'); ?></h3>
-            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-top:solid 1px #dddddd;margin-bottom:30px;">
-            <?php
-            if ($updates_data->wp_updated > 0) : 
-                foreach($updates_data->updates as $update) :
-                    if ($update->type == 'wp') :
-                        echo '<tr><td style="width:40%;padding:8px 8px 8px 0px;border-bottom:solid 1px #dddddd;">' . esc_html($update->name) . '</td><td style="text-align:center;width:30%;padding:8px;border-bottom:solid 1px #dddddd;"">' . esc_html($update->version_before) . ' -> ' . esc_html($update->version_after) . '</td><td style="text-align:right;width:30%;padding:8px 0px 8px 8px;border-bottom:solid 1px #dddddd;"">' . esc_html(date($date_format, strtotime($update->date))) . '</td>';
-                    endif;
-                endforeach;
-            else:
-                echo '<tr><td style="width:40%;padding:8px 0px 8px 0px;border-bottom:solid 1px #dddddd;">No WordPress Updates</td>';
-            endif;
-            ?>
-            </table>
+            </tr>
+            <!-- end copy -->
 
-            <h3 style="font-size:14px;margin:0px 0px 4px 0px;"><?php _e('Plugin Updates','wp-client-reports'); ?></h3>
-            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-top:solid 1px #dddddd;margin-bottom:30px;">
-            <?php 
-            if ($updates_data->total_plugins_updated > 0) : 
-                foreach($updates_data->updates as $update) :
-                    if ($update->type == 'plugin') :
-                        echo '<tr><td style="width:40%;padding:8px 8px 8px 0px;border-bottom:solid 1px #dddddd;">' . esc_html($update->name) . '</td><td style="text-align:center;width:30%;padding:8px;border-bottom:solid 1px #dddddd;"">' . esc_html($update->version_before) . ' -> ' . esc_html($update->version_after) . '</td><td style="text-align:right;width:30%;padding:8px 0px 8px 8px;border-bottom:solid 1px #dddddd;"">' . esc_html(date($date_format, strtotime($update->date))) . '</td>';
-                    endif;
-                endforeach;
-            else:
-                echo '<tr><td style="width:40%;padding:8px 0px 8px 0px;border-bottom:solid 1px #dddddd;">No Plugin Updates</td>';
-            endif;
-            ?>
-            </table>
-
-            <h3 style="font-size:14px;margin:0px 0px 4px 0px;"><?php _e('Theme Updates','wp-client-reports'); ?></h3>
-            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-top:solid 1px #dddddd;margin-bottom:20px;">
-            <?php 
-            if ($updates_data->total_themes_updated > 0) : 
-                foreach($updates_data->updates as $update) :
-                    if ($update->type == 'theme') :
-                        echo '<tr><td style="width:40%;padding:8px 8px 8px 0px;border-bottom:solid 1px #dddddd;">' . esc_html($update->name) . '</td><td style="text-align:center;width:30%;padding:8px;border-bottom:solid 1px #dddddd;"">' . esc_html($update->version_before) . ' -> ' . esc_html($update->version_after) . '</td><td style="text-align:right;width:30%;padding:8px 0px 8px 8px;border-bottom:solid 1px #dddddd;"">' . esc_html(date($date_format, strtotime($update->date))) . '</td>';
-                    endif;
-                endforeach;
-            else:
-                echo '<tr><td style="width:40%;padding:8px 0px 8px 0px;border-bottom:solid 1px #dddddd;">No Theme Updates</td>';
-            endif;
-            ?>
-            </table>
-        </td>
-        </tr>
-        <!-- end copy -->
-    <?php
+            <!-- start copy -->
+            <tr>
+                <td align="left" bgcolor="#ffffff" style="padding: 0px 40px 0px 40px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <td align="center" width="250" style="padding: 20px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
+                        <h1 style="font-weight: bold; color: <?php echo $brand_color; ?>; margin: 0px; font-size: 66px; line-height: 1em;"><?php echo esc_html($updates_data->comments_count); ?></h1>
+                        <h5 style="text-transform: uppercase; color: #888888; font-size: 16px; line-height:18px; font-weight: 300; margin: 0px;"><?php printf( __( 'Theme %s Updates', 'wp-client-reports' ), '<br>' ); ?></h5>
+                    </td>
+                    <td bgcolor="#ffffff" align="center" width="20">&nbsp;</td>
+                    <td align="center" width="250" style="padding: 20px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
+                        
+                    </td>
+                    </table>
+                </td>
+            </tr>
+            <!-- end copy -->
+        <?php
+    }
 }
 
 
@@ -748,12 +925,14 @@ add_action( 'admin_init', 'wp_client_reports_options_init', 10 );
 function wp_client_reports_options_init(  ) {
 
 	register_setting( 'wp_client_reports_options_page', 'wp_client_reports_default_email' );
-	register_setting( 'wp_client_reports_options_page', 'wp_client_reports_default_intro' );
+    register_setting( 'wp_client_reports_options_page', 'wp_client_reports_default_intro' );
+    register_setting( 'wp_client_reports_options_page', 'wp_client_reports_enable_updates' );
+    register_setting( 'wp_client_reports_options_page', 'wp_client_reports_enable_content_stats' );
 
 	add_settings_section(
-		'wp_client_reports_pluginPage_section',
-		__( 'Settings', 'wp-client-reports' ),
-		'wp_client_reports_settings_section_callback',
+		'wp_client_reports_email_section',
+		__( 'Email Settings', 'wp-client-reports' ),
+		'wp_client_reports_email_section_callback',
 		'wp_client_reports_options_page'
 	);
 
@@ -762,7 +941,7 @@ function wp_client_reports_options_init(  ) {
 		__( 'Default Email Address(es)', 'wp-client-reports' ),
 		'wp_client_reports_default_email_render',
 		'wp_client_reports_options_page',
-		'wp_client_reports_pluginPage_section'
+		'wp_client_reports_email_section'
 	);
 
 	add_settings_field(
@@ -770,7 +949,37 @@ function wp_client_reports_options_init(  ) {
 		__( 'Default Email Intro', 'wp-client-reports' ),
 		'wp_client_reports_default_intro_render',
 		'wp_client_reports_options_page',
-		'wp_client_reports_pluginPage_section'
+		'wp_client_reports_email_section'
+    );
+
+    add_settings_section(
+		'wp_client_reports_updates_section',
+		__( 'Software Updates', 'wp-client-reports' ),
+		'wp_client_reports_settings_section_callback',
+		'wp_client_reports_options_page'
+	);
+    
+    add_settings_field(
+		'wp_client_reports_enable_updates',
+		__( 'Enable Update Tracking', 'wp-client-reports' ),
+		'wp_client_reports_enable_updates_render',
+		'wp_client_reports_options_page',
+		'wp_client_reports_updates_section'
+    );
+
+    add_settings_section(
+		'wp_client_reports_content_stats_section',
+		__( 'Site Content', 'wp-client-reports' ),
+		'wp_client_reports_settings_section_callback',
+		'wp_client_reports_options_page'
+	);
+    
+    add_settings_field(
+		'wp_client_reports_enable_content_stats',
+		__( 'Enable Site Content Stats', 'wp-client-reports' ),
+		'wp_client_reports_enable_content_stats_render',
+		'wp_client_reports_options_page',
+		'wp_client_reports_content_stats_section'
 	);
 
 }
@@ -804,9 +1013,39 @@ function wp_client_reports_default_intro_render(  ) {
 /**
  * Settings section help
  */
-function wp_client_reports_settings_section_callback(  ) {
+function wp_client_reports_email_section_callback(  ) {
 	//Print nothing
 }
+
+
+/**
+ * Add default intro field to the options page
+ */
+function wp_client_reports_enable_updates_render(  ) {
+	$option = get_option( 'wp_client_reports_enable_updates' );
+	?>
+    <label class="wp-client-reports-switch">
+        <input type="checkbox" name="wp_client_reports_enable_updates" <?php if ($option == 'on') { echo "checked"; } ?>>
+        <span class="wp-client-reports-slider"></span>
+    </label>
+	<?php
+}
+
+/**
+ * Add default intro field to the options page
+ */
+function wp_client_reports_enable_content_stats_render(  ) {
+	$option = get_option( 'wp_client_reports_enable_content_stats' );
+	?>
+    <label class="wp-client-reports-switch">
+        <input type="checkbox" name="wp_client_reports_enable_content_stats" <?php if ($option == 'on') { echo "checked"; } ?>>
+        <span class="wp-client-reports-slider"></span>
+    </label>
+	<?php
+}
+
+
+
 
 
 /**
@@ -815,8 +1054,8 @@ function wp_client_reports_settings_section_callback(  ) {
 function wp_client_reports_options_page(  ) {
 	?>
     <div class="wrap" id="wp-client-reports-options">
-        <h1><?php _e('WP Client Reports Options','wp-client-reports'); ?></h1>
-        <form action='options.php' method='post'>
+        <h1><?php _e('WP Client Reports Settings','wp-client-reports'); ?></h1>
+        <form action='options.php' method='post' enctype="multipart/form-data">
             <div id="poststuff">
                 <div id="post-body" class="metabox-holder columns-2">
                     <div id="postbox-container-1" class="postbox-container">
@@ -861,15 +1100,27 @@ function wp_client_reports_options_page(  ) {
                         </div><!-- #bugs-features -->
                     </div><!-- .postbox-container -->
                     <div id="postbox-container-2" class="postbox-container">
-                        <div class="postbox wp-client-reports-settings-postbox">
-                            <h2 class="hndle"><span>General Settings</span></h2>
-                            <div class="inside">
-                                <?php
-                                    settings_fields( 'wp_client_reports_options_page' );
-                                    do_settings_sections( 'wp_client_reports_options_page' );
-                                ?>
-                            </div><!-- .inside -->
-                        </div><!-- .postbox -->
+                        <?php
+                            settings_fields( 'wp_client_reports_options_page' );
+
+                            global $wp_settings_sections;
+
+                            foreach ( $wp_settings_sections['wp_client_reports_options_page'] as $section ) {
+
+                                echo '<div class="postbox wp-client-reports-settings-postbox">';
+                                    if ( $section['title'] ) {
+                                        echo '<h2 class="hndle"><span>' . $section['title'] . '</span></h2>';
+                                    }
+                                echo '<div class="inside">';
+                                echo '<table class="form-table" role="presentation">';
+                                do_settings_fields( 'wp_client_reports_options_page', $section['id'] );
+                                echo '</table>';
+                                echo '</div><!-- .inside -->';
+                                echo '</div><!-- .postbox -->';
+
+                            }
+                            //do_settings_sections( 'wp_client_reports_options_page' );
+                        ?>
                     </div><!-- .postbox-container -->
                 </div><!-- #post-body -->
                 <br class="clear">
