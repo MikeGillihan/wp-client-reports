@@ -425,22 +425,24 @@ function wp_client_reports_stats_page_updates() {
             <div class="inside">
                 <div class="main">
                     <div class="wp-client-reports-big-numbers">
-                        <div class="wp-client-reports-big-number">
-                            <h2 id="wp-client-reports-total-update-count">0</h2>
-                            <h3><?php printf( __( 'Total %s Updates', 'wp-client-reports' ), '<br>' ); ?></h3>
-                        </div><!-- .wp-client-reports-big-number -->
-                        <div class="wp-client-reports-big-number">
-                            <h2 id="wp-client-reports-wp-update-count">0</h2>
-                            <h3><?php printf( __( 'WordPress %s Updates', 'wp-client-reports' ), '<br>' ); ?></h3>
-                        </div><!-- .wp-client-reports-big-number -->
-                        <div class="wp-client-reports-big-number">
-                            <h2 id="wp-client-reports-plugin-update-count">0</h2>
-                            <h3><?php printf( __( 'Plugin %s Updates', 'wp-client-reports' ), '<br>' ); ?></h3>
-                        </div><!-- .wp-client-reports-big-number -->
-                        <div class="wp-client-reports-big-number">
-                            <h2 id="wp-client-reports-theme-update-count">0</h2>
-                            <h3><?php printf( __( 'Theme %s Updates', 'wp-client-reports' ), '<br>' ); ?></h3>
-                        </div><!-- .wp-client-reports-big-number -->
+                        <?php 
+                            wp_client_reports_render_big_number(
+                                sprintf( __( 'Total %s Updates', 'wp-client-reports' ), '<br>' ), 
+                                'wp-client-reports-total-update-count'
+                            );
+                            wp_client_reports_render_big_number(
+                                sprintf( __( 'WordPress %s Updates', 'wp-client-reports' ), '<br>' ), 
+                                'wp-client-reports-wp-update-count'
+                            );
+                            wp_client_reports_render_big_number(
+                                sprintf( __( 'Plugin %s Updates', 'wp-client-reports' ), '<br>' ), 
+                                'wp-client-reports-plugin-update-count'
+                            );
+                            wp_client_reports_render_big_number(
+                                sprintf( __( 'Theme %s Updates', 'wp-client-reports' ), '<br>' ), 
+                                'wp-client-reports-theme-update-count'
+                            );
+                        ?>
                     </div><!-- .wp-client-reports-big-numbers -->
 
                     <div class="wp-client-report-section wp-client-report-border-top">
@@ -648,18 +650,20 @@ function wp_client_reports_stats_page_content() {
                 <div class="inside">
                     <div class="main">
                         <div class="wp-client-reports-big-numbers">
-                            <div class="wp-client-reports-big-number">
-                                <h2 id="wp-client-reports-new-posts-count">0</h2>
-                                <h3><?php printf( __( 'Posts %s Added', 'wp-client-reports' ), '<br>' ); ?></h3>
-                            </div><!-- .wp-client-reports-big-number -->
-                            <div class="wp-client-reports-big-number">
-                                <h2 id="wp-client-reports-new-pages-count">0</h2>
-                                <h3><?php printf( __( 'Pages %s Added', 'wp-client-reports' ), '<br>' ); ?></h3>
-                            </div><!-- .wp-client-reports-big-number -->
-                            <div class="wp-client-reports-big-number">
-                                <h2 id="wp-client-reports-new-comments-count">0</h2>
-                                <h3><?php printf( __( 'Comments %s Added', 'wp-client-reports' ), '<br>' ); ?></h3>
-                            </div><!-- .wp-client-reports-big-number -->
+                            <?php 
+                                wp_client_reports_render_big_number(
+                                    sprintf( __( 'Posts %s Added', 'wp-client-reports' ), '<br>' ), 
+                                    'wp-client-reports-new-posts-count'
+                                );
+                                wp_client_reports_render_big_number(
+                                    sprintf( __( 'Pages %s Added', 'wp-client-reports' ), '<br>' ), 
+                                    'wp-client-reports-new-pages-count'
+                                );
+                                wp_client_reports_render_big_number(
+                                    sprintf( __( 'Comments %s Added', 'wp-client-reports' ), '<br>' ), 
+                                    'wp-client-reports-new-comments-count'
+                                );
+                            ?>
                         </div><!-- .wp-client-reports-big-numbers -->
 
                     </div><!-- .inside -->
@@ -779,7 +783,7 @@ function wp_client_reports_render_email_header($title) {
     ?>
     <tr>
         <td align="left" bgcolor="#ffffff" style="padding: 0px 40px 0px 40px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
-            <h5 style="font-weight:bold; font-size: 16px; line-height:18px; padding-bottom:10px; margin: 15px 0px 10px;border-bottom:solid 1px #ddd;"><?php echo $title; ?></h5>
+            <h5 style="font-weight:bold; font-size: 16px; line-height:18px; padding-bottom:10px; margin: 15px 0px 10px;border-bottom:solid 1px #ddd;"><?php echo esc_html($title); ?></h5>
         </td>
     </tr>
     <?php
@@ -807,10 +811,13 @@ function wp_client_reports_render_email_row($stat1, $label1, $stat2, $label2) {
 
 function wp_client_reports_render_email_big_number($stat, $label) {
     $brand_color = wp_client_reports_get_brand_color();
-    ?>
-    <h1 style="font-weight: bold; color: <?php echo $brand_color; ?>; margin: 0px; font-size: 66px; line-height: 1em;"><?php echo $stat; ?></h1>
-    <h5 style="text-transform: uppercase; color: #888888; font-size: 16px; line-height:18px; font-weight: 300; margin: 0px;"><?php echo $label; ?></h5>
-    <?php
+    $allowed_html = ['br' => [] ];
+    if ($stat && $label) {
+        ?>
+        <h1 style="font-weight: bold; color: <?php echo esc_attr($brand_color); ?>; margin: 0px; font-size: 66px; line-height: 1em;"><?php echo esc_html($stat); ?></h1>
+        <h5 style="text-transform: uppercase; color: #888888; font-size: 16px; line-height:18px; font-weight: 300; margin: 0px;"><?php echo wp_kses($label, $allowed_html); ?></h5>
+        <?php
+    }
 }
 
 
@@ -819,53 +826,26 @@ function wp_client_reports_render_email_big_number($stat, $label) {
  * Stats page for updates
  */
 function wp_client_reports_stats_email_updates($start_date, $end_date) {
-    $brand_color = wp_client_reports_get_brand_color();
     $updates_data = wp_client_reports_get_updates_data($start_date, $end_date);
     $date_format = get_option('date_format');
-    ?>
-    <!-- start copy -->
-        <tr>
-            <td align="left" bgcolor="#ffffff" style="padding: 0px 40px 0px 40px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
-                <h5 style="font-weight:bold; font-size: 16px; line-height:18px; padding-bottom:10px; margin: 15px 0px 10px;border-bottom:solid 1px #ddd;"><?php _e( 'Software Updates', 'wp-client-reports' ); ?></h5>
-            </td>
-        </tr>
-        <!-- end copy -->
-        
-        <!-- start copy -->
-        <tr>
-            <td align="left" bgcolor="#ffffff" style="padding: 0px 40px 0px 40px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                <td align="center" width="250" style="padding: 20px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
-                    <h1 style="font-weight: bold; color: <?php echo $brand_color; ?>; margin: 0px; font-size: 66px; line-height: 1em;"><?php echo esc_html($updates_data->total_updates); ?></h1>
-                    <h5 style="text-transform: uppercase; color: #888888; font-size: 16px; line-height:18px; font-weight: 300; margin: 0px;"><?php printf( __( 'Total %s Updates', 'wp-client-reports' ), '<br>' ); ?></h5>
-                </td>
-                <td bgcolor="#ffffff" align="center" width="20">&nbsp;</td>
-                <td align="center" width="250" style="padding: 20px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
-                    <h1 style="font-weight: bold; color: <?php echo $brand_color; ?>; margin: 0px; font-size: 66px; line-height: 1em;"><?php echo esc_html($updates_data->wp_updated); ?></h1>
-                    <h5 style="text-transform: uppercase; color: #888888; font-size: 16px; line-height:18px; font-weight: 300; margin: 0px;"><?php printf( __( 'WordPress %s Updates', 'wp-client-reports' ), '<br>' ); ?></h5>
-                </td>
-                </table>
-            </td>
-        </tr>
-        <!-- end copy -->
+    
+    wp_client_reports_render_email_header(__( 'Software Updates', 'wp-client-reports' ));
 
-        <!-- start copy -->
-        <tr>
-            <td align="left" bgcolor="#ffffff" style="padding: 0px 40px 0px 40px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                <td align="center" width="250" style="padding: 20px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
-                    <h1 style="font-weight: bold; color: <?php echo $brand_color; ?>; margin: 0px; font-size: 66px; line-height: 1em;"><?php echo esc_html($updates_data->total_plugins_updated); ?></h1>
-                    <h5 style="text-transform: uppercase; color: #888888; font-size: 16px; line-height:18px; font-weight: 300; margin: 0px;"><?php printf( __( 'Plugin %s Updates', 'wp-client-reports' ), '<br>' ); ?></h5>
-                </td>
-                <td bgcolor="#ffffff" align="center" width="20">&nbsp;</td>
-                <td align="center" width="250" style="padding: 20px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
-                    <h1 style="font-weight: bold; color: <?php echo $brand_color; ?>; margin: 0px; font-size: 66px; line-height: 1em;"><?php echo esc_html($updates_data->total_themes_updated); ?></h1>
-                    <h5 style="text-transform: uppercase; color: #888888; font-size: 16px; line-height:18px; font-weight: 300; margin: 0px;"><?php printf( __( 'Theme %s Updates', 'wp-client-reports' ), '<br>' ); ?></h5>
-                </td>
-                </table>
-            </td>
-        </tr>
-        <!-- end copy -->
+    wp_client_reports_render_email_row(
+        $updates_data->total_updates, 
+        sprintf( __( 'Total %s Updates', 'wp-client-reports' ), '<br>' ), 
+        $updates_data->wp_updated, 
+        sprintf( __( 'WordPress %s Updates', 'wp-client-reports' ), '<br>' )
+    );
+
+    wp_client_reports_render_email_row(
+        $updates_data->total_plugins_updated, 
+        sprintf( __( 'Plugin %s Updates', 'wp-client-reports' ), '<br>' ), 
+        $updates_data->total_themes_updated, 
+        sprintf( __( 'Theme %s Updates', 'wp-client-reports' ), '<br>' )
+    );
+        
+    ?>
         
         <!-- start copy -->
         <tr>
@@ -925,53 +905,24 @@ function wp_client_reports_stats_email_updates($start_date, $end_date) {
  * Stats page for updates
  */
 function wp_client_reports_stats_email_content($start_date, $end_date) {
-    $brand_color = wp_client_reports_get_brand_color();
-    $updates_data = wp_client_reports_get_content_stats_data($start_date, $end_date);
+    $content_stats_data = wp_client_reports_get_content_stats_data($start_date, $end_date);
     $date_format = get_option('date_format');
-    ?>
-    <!-- start copy -->
-        <tr>
-            <td align="left" bgcolor="#ffffff" style="padding: 0px 40px 0px 40px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
-                <h5 style="font-weight:bold; font-size: 16px; line-height:18px; padding-bottom:10px; margin: 15px 0px 10px;border-bottom:solid 1px #ddd;"><?php _e( 'Site Content', 'wp-client-reports' ); ?></h5>
-            </td>
-        </tr>
-        <!-- end copy -->
-        
-        <!-- start copy -->
-        <tr>
-            <td align="left" bgcolor="#ffffff" style="padding: 0px 40px 0px 40px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                <td align="center" width="250" style="padding: 20px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
-                    <h1 style="font-weight: bold; color: <?php echo $brand_color; ?>; margin: 0px; font-size: 66px; line-height: 1em;"><?php echo esc_html($updates_data->posts_count); ?></h1>
-                    <h5 style="text-transform: uppercase; color: #888888; font-size: 16px; line-height:18px; font-weight: 300; margin: 0px;"><?php printf( __( 'Posts %s Added', 'wp-client-reports' ), '<br>' ); ?></h5>
-                </td>
-                <td bgcolor="#ffffff" align="center" width="20">&nbsp;</td>
-                <td align="center" width="250" style="padding: 20px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
-                    <h1 style="font-weight: bold; color: <?php echo $brand_color; ?>; margin: 0px; font-size: 66px; line-height: 1em;"><?php echo esc_html($updates_data->pages_count); ?></h1>
-                    <h5 style="text-transform: uppercase; color: #888888; font-size: 16px; line-height:18px; font-weight: 300; margin: 0px;"><?php printf( __( 'Pages %s Added', 'wp-client-reports' ), '<br>' ); ?></h5>
-                </td>
-                </table>
-            </td>
-        </tr>
-        <!-- end copy -->
 
-        <!-- start copy -->
-        <tr>
-            <td align="left" bgcolor="#ffffff" style="padding: 0px 40px 0px 40px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                <td align="center" width="250" style="padding: 20px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
-                    <h1 style="font-weight: bold; color: <?php echo $brand_color; ?>; margin: 0px; font-size: 66px; line-height: 1em;"><?php echo esc_html($updates_data->comments_count); ?></h1>
-                    <h5 style="text-transform: uppercase; color: #888888; font-size: 16px; line-height:18px; font-weight: 300; margin: 0px;"><?php printf( __( 'Comments %s Added', 'wp-client-reports' ), '<br>' ); ?></h5>
-                </td>
-                <td bgcolor="#ffffff" align="center" width="20">&nbsp;</td>
-                <td align="center" width="250" style="padding: 20px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
-                    
-                </td>
-                </table>
-            </td>
-        </tr>
-        <!-- end copy -->
-    <?php
+    wp_client_reports_render_email_header(__( 'Site Content', 'wp-client-reports' ));
+
+    wp_client_reports_render_email_row(
+        $content_stats_data->posts_count, 
+        sprintf( __( 'Total %s Updates', 'wp-client-reports' ), '<br>' ), 
+        $content_stats_data->pages_count, 
+        sprintf( __( 'WordPress %s Updates', 'wp-client-reports' ), '<br>' )
+    );
+
+    wp_client_reports_render_email_row(
+        $content_stats_data->comments_count, 
+        sprintf( __( 'Plugin %s Updates', 'wp-client-reports' ), '<br>' ), 
+        null, 
+        null
+    );
 }
 
 
