@@ -14,12 +14,15 @@ if( !defined( 'ABSPATH' ) )
 	exit;
 
 
+define( 'WP_CLIENT_REPORTS_VERSION', '1.0.2' );
+
+
 /**
  * Add scripts and styles into the admin as needed
  */
 function wp_client_reports_scripts() {
 
-    wp_enqueue_style( 'wp-client-reports-css', plugin_dir_url( __FILE__ ) . '/css/wp-client-reports.css', array(), '1.0' );
+    wp_enqueue_style( 'wp-client-reports-css', plugin_dir_url( __FILE__ ) . '/css/wp-client-reports.css', array(), WP_CLIENT_REPORTS_VERSION );
 
     $screen = get_current_screen();
     if($screen && $screen->id == 'dashboard_page_wp_client_reports') {
@@ -28,7 +31,7 @@ function wp_client_reports_scripts() {
         wp_enqueue_script( 'moment-js', plugin_dir_url( __FILE__ ) . '/js/moment.js', array(), '2.24.0', true );
         wp_enqueue_script('thickbox');
         wp_enqueue_style( 'thickbox' );
-        wp_register_script( 'wp-client-reports-js', plugin_dir_url( __FILE__ ) . '/js/wp-client-reports.js', array('jquery','jquery-ui-datepicker'), '1.0', true );
+        wp_register_script( 'wp-client-reports-js', plugin_dir_url( __FILE__ ) . '/js/wp-client-reports.js', array('jquery','jquery-ui-datepicker'), WP_CLIENT_REPORTS_VERSION, true );
         $date_format = get_option('date_format');
         $js_data = array(
             'moment_date_format' => wp_client_reports_convert_date_format($date_format),

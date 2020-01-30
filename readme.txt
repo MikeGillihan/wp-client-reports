@@ -1,10 +1,10 @@
 === WP Client Reports ===
 Contributors: thejester12
 Donate link: https://switchwp.com/plugins/wp-client-reports/
-Tags:  reports, client reports, analytics, maintenance, updates, plugin updates, theme updates
+Tags:  reports, client reports, reporting, statistics, analytics, maintenance, updates, plugin updates, theme updates
 Requires at least: 5.0.0
 Tested up to: 5.3.2
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 Requires PHP: 5.6.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -19,7 +19,7 @@ You can use the beautiful reporting analytics page to show what updates have hap
 
 Send an HTML email with update statistics whenever you complete updates to show the value of your work to your client or other site stakeholders.
 
-Have an idea that should be added? Let us know at [SwitchWP](https://switchwp.com/plugins/wp-client-reports/).
+Have an idea that should be added? Let me know at [SwitchWP](https://switchwp.com/plugins/wp-client-reports/).
 
 == Installation ==
 
@@ -50,6 +50,10 @@ With this basic version there isn't a lot to customize. We are working on adding
 
 
 == Changelog ==
+
+= 1.0.3 =
+* Restructure parts of the plugin for more consistency
+* Add content stats section
 
 = 1.0.2 =
 * Rethink data loading for report page and email

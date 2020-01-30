@@ -335,3 +335,12 @@ input:checked + .wp-client-reports-slider:before {
     -ms-transform: translateX(26px);
     transform: translateX(26px);
 }
+.wp-client-reports-pro-active-license {
+    display:inline-block;
+    background:#46b450;
+    color:#FFF;
+    height:30px;
+    padding:0px 15px;
+    border-radius:3px;
+    line-height:30px;
+}
