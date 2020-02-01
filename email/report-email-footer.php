@@ -22,9 +22,13 @@
           <tr>
             <td align="center" bgcolor="#f1f1f1" style="padding: 12px 24px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 14px; line-height: 20px; color: #666;">
                 <?php if ( !is_plugin_active( 'wp-client-reports-pro/wp_client_reports_pro.php' ) ) : ?>
-                    <p style="margin: 0 0 10px;">Report created with <a href="https://switchwp.com/plugins/wp-client-reports/">WP Client Reports</a>.</p>
+                    <p style="margin: 0 0 10px;">
+                        <?php printf( __( 'Report created with %1$sWP Client Reports%2$s.', 'wp-client-reports' ), '<a href="https://switchwp.com/plugins/wp-client-reports/?utm_source=email&utm_medium=report&utm_campaign=footer" target="_blank">', '</a>' ); ?>
+                    </p>
                 <?php endif; ?>
-                <p style="margin: 0 0 10px;">This email was sent by an administrator at <a href="<?php echo site_url(); ?>"><?php echo get_bloginfo('name'); ?></a>.</p>
+                <p style="margin: 0 0 10px;">
+                    <?php printf( __( 'This email was sent by an administrator at %s.', 'wp-client-reports' ), '<a href="' . site_url() . '">' . get_bloginfo('name') . '</a>' ); ?>
+                </p>
             </td>
           </tr>
           <!-- end unsubscribe -->

@@ -209,10 +209,11 @@
 }
 
 .dashboard_page_wp_client_reports #TB_ajaxContent {
-    height: 280px !important;
+    height: 325px !important;
 }
 
-#report-email {
+#report-email,
+#report-title {
     width: 100%;
 }
 
@@ -343,4 +344,12 @@ input:checked + .wp-client-reports-slider:before {
     padding:0px 15px;
     border-radius:3px;
     line-height:30px;
+}
+
+.wp-client-reports-instructions {
+    position: absolute;
+    top: 21px;
+    right: 20px;
+    text-align: right;
+    line-height: 1.6;
 }

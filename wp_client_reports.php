@@ -2,10 +2,10 @@
 /*
 Plugin Name: WP Client Reports
 Plugin URI: https://switchwp.com/wp-client-reports/
-Description: Track Plugin and Theme Updates and send them as Client Reports
-Version: 1.0.2
-Author: Jesse Sutherland
-Author URI: http://jessesutherland.com/
+Description: Send beautiful client maintenance reports with plugin and theme update tracking and more
+Version: 1.0.3
+Author: SwitchWP
+Author URI: https://switchwp.com/
 Text Domain: wp-client-reports
 Domain Path: /languages/
 */
@@ -14,7 +14,7 @@ if( !defined( 'ABSPATH' ) )
 	exit;
 
 
-define( 'WP_CLIENT_REPORTS_VERSION', '1.0.2' );
+define( 'WP_CLIENT_REPORTS_VERSION', '1.0.4' );
 
 
 /**
@@ -45,11 +45,28 @@ function wp_client_reports_scripts() {
 add_action( 'admin_print_scripts', 'wp_client_reports_scripts' );
 
 
+add_filter( 'plugin_action_links', 'wp_client_reports_plugin_page_links1', 10, 2 );
+function wp_client_reports_plugin_page_links1( $links_array, $plugin_file_name ){
+	if( strpos( $plugin_file_name, basename(__FILE__) ) ) {
+        array_unshift( $links_array, '<a href="' . admin_url( 'index.php?page=wp_client_reports' ) . '">Reports</a>' );
+		array_unshift( $links_array, '<a href="' . admin_url( 'options-general.php?page=wp_client_reports' ) . '">Settings</a>' );
+	}
+	return $links_array;
+}
+
+
+add_filter( 'plugin_row_meta', 'wp_client_reports_plugin_page_links2', 10, 4 );
+function wp_client_reports_plugin_page_links2( $links_array, $plugin_file_name, $plugin_data, $status ) {
+    if ( strpos( $plugin_file_name, basename(__FILE__) ) ) {
+        $links_array[] = '<a href="https://switchwp.com/docs/product/wp-client-reports/" target="_blank">Docs</a>';
+    }
+    return $links_array;
+}
+
+
 /**
  * On plugin activation create the database tables needed to store updates
  */
-global $wp_client_reports_version;
-$wp_client_reports_version = '1.0';
 register_activation_hook( __FILE__, 'wp_client_reports_data_install' );
 function wp_client_reports_data_install() {
 	global $wpdb;
@@ -74,7 +91,9 @@ function wp_client_reports_data_install() {
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	dbDelta( $wp_client_reports_sql );
 
-	add_option( 'wp_client_reports_version', $wp_client_reports_version );
+    add_option( 'wp_client_reports_version', WP_CLIENT_REPORTS_VERSION );
+    add_option( 'wp_client_reports_enable_updates', 'on' );
+    add_option( 'wp_client_reports_enable_content_stats', 'on' );
 }
 
 
@@ -348,6 +367,10 @@ function wp_client_reports_add_admin_menu(  ) {
  * Stats page for updates
  */
 function wp_client_reports_stats_page() {
+    $default_title = get_option( 'wp_client_reports_default_title' );
+    if (!$default_title) {
+        $default_title = get_bloginfo('name') . ' ' . __('Site Report','wp-client-reports');
+    }
     $default_email = get_option( 'wp_client_reports_default_email' );
     if (!$default_email) {
         $default_email = get_bloginfo('admin_email');
@@ -359,7 +382,8 @@ function wp_client_reports_stats_page() {
                 <h1><?php _e('WP Client Reports','wp-client-reports'); ?></h1>
                 <div class="wp-client-reports-date-chooser-area">
                     <a href="#TB_inline?width=600&height=550&inlineId=wp-client-reports-which-email-modal" id="wp-client-reports-email-report" class="thickbox button wp-client-reports-email-report-button"><?php _e('Email Report','wp-client-reports'); ?> <span class="dashicons dashicons-email"></span></a>
-                    <button id="wp-client-reports-force-update" class="button wp-client-reports-force-update-button"><?php _e('Refresh Report','wp-client-reports'); ?> <span class="dashicons dashicons-update-alt"></span></button>
+                    <a href="<?php echo admin_url( 'options-general.php?page=wp_client_reports' ); ?>" class="button"><?php _e('Settings','wp-client-reports'); ?> <span class="dashicons dashicons-admin-settings"></span></a>
+                    <button id="wp-client-reports-force-update" class="button wp-client-reports-force-update-button"><?php _e('Refresh','wp-client-reports'); ?> <span class="dashicons dashicons-update-alt"></span></button>
                     <button id="wp-client-reports-date-chooser-button" class="button button-primary wp-client-reports-date-chooser-button"><span id="wp-client-reports-button-label"><?php _e('Last 30 Days','wp-client-reports'); ?></span> <span class="dashicons dashicons-arrow-down"></span></button><!-- #wp-client-reports-date-chooser-menu -->
                     <div id="wp-client-reports-date-chooser" style="display:none;">
                         <div class="date-chooser-presets">
@@ -385,7 +409,9 @@ function wp_client_reports_stats_page() {
             <?php do_action('wp_client_reports_stats'); ?>
 
             <?php if ( !is_plugin_active( 'wp-client-reports-pro/wp_client_reports_pro.php' ) ) : ?>
-                <p style="margin: 20px 0;text-align:center;">Report created with <a href="https://switchwp.com/plugins/wp-client-reports/" target="_blank">WP Client Reports</a>.</p>
+                <p style="margin: 20px 0;text-align:center;">
+                    <?php printf( __( 'Report created with %1$sWP Client Reports%2$s.', 'wp-client-reports' ), '<a href="https://switchwp.com/plugins/wp-client-reports/?utm_source=wordpress&utm_medium=reports&utm_campaign=footer" target="_blank">', '</a>' ); ?>
+                </p>
             <?php endif; ?>
 
             <div id="wp-client-reports-which-email-modal" class="wp-client-reports-which-email-modal" style="display:none;">
@@ -393,11 +419,15 @@ function wp_client_reports_stats_page() {
                     <table class="form-table" role="presentation">
                         <tbody>
                             <tr>
-                                <th scope="row"><label for="report-email"><?php _e('Send Email To','wp-client-reports'); ?></label></th>
-                                <td><input name="report_email" type="email" id="report-email" value="<?php echo esc_attr($default_email); ?>" class="regular-text"></td>
+                                <th scope="row"><label for="report-title"><?php _e('Report Title','wp-client-reports'); ?></label></th>
+                                <td><input name="report_title" type="text" id="report-title" value="<?php echo esc_attr($default_title); ?>" class="regular-text"></td>
                             </tr>
                             <tr>
-                                <th scope="row"><label for="report-intro"><?php _e('Email Introduction','wp-client-reports'); ?></label></th>
+                                <th scope="row"><label for="report-email"><?php _e('Send Report Email To','wp-client-reports'); ?></label></th>
+                                <td><input name="report_email" type="text" id="report-email" value="<?php echo esc_attr($default_email); ?>" class="regular-text"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><label for="report-intro"><?php _e('Report Email Introduction','wp-client-reports'); ?></label></th>
                                 <td><textarea name="report_intro" id="report-intro" class="large-text"><?php echo esc_attr($default_intro); ?></textarea></td>
                             </tr>
                         </tbody>
@@ -684,7 +714,18 @@ function wp_client_reports_stats_page_content() {
 add_action('wp_ajax_wp_client_reports_send_email_report', 'wp_client_reports_send_email_report');
 function wp_client_reports_send_email_report() {
 
-    $report_email_input = sanitize_email($_GET['report_email']);
+    $report_title_input = sanitize_text_field($_GET['report_title']);
+    if (strpos($_GET['report_email'], ',') !== false) {
+        $report_email_input = [];
+        $temp_email_array = explode(",", $_GET['report_email']);
+        if (is_array($temp_email_array)) {
+            foreach($temp_email_array as $email) {
+                $report_email_input[] = sanitize_email($email);
+            }
+        }
+    } else {
+        $report_email_input = sanitize_email($_GET['report_email']);
+    }
     $report_intro_input = sanitize_text_field($_GET['report_intro']);
     $start = sanitize_text_field($_GET['start']);
     $end = sanitize_text_field($_GET['end']);
@@ -703,9 +744,28 @@ function wp_client_reports_send_email_report() {
     $dates = wp_client_reports_validate_dates($start, $end);
 
     $date_format = get_option('date_format');
+
+    $timezone_string = get_option('timezone_string');
+    if ($timezone_string) {
+        date_default_timezone_set($timezone_string);
+    }
+
+    $start_date_object = date_create_from_format('Y-m-d', $dates->start_date);
+    $end_date_object = date_create_from_format('Y-m-d', $dates->end_date);
+
+    $start_day = $start_date_object->format('j');
+    $start_month = $start_date_object->format('n');
+    $end_day = $end_date_object->format('j');
+    $end_month = $end_date_object->format('n');
+    $lastdayofmonth = date('t');
     
-    $start_date_formatted = date($date_format, strtotime($dates->start_date));
-    $end_date_formatted = date($date_format, strtotime($dates->end_date));
+    if ($start_month == $end_month && $start_day == 1 && $end_day == $lastdayofmonth) {
+        $date_formatted = $start_date_object->format('F Y');
+    } else {
+        $start_date_formatted = $start_date_object->format($date_format);
+        $end_date_formatted = $end_date_object->format($date_format);
+        $date_formatted = __('From','wp-client-reports') . ' ' . esc_html($start_date_formatted) . ' - ' . $end_date_formatted;
+    }
 
     $brand_color = wp_client_reports_get_brand_color();
 
@@ -720,8 +780,8 @@ function wp_client_reports_send_email_report() {
         <!-- start copy -->
         <tr>
         <td bgcolor="#ffffff" align="left" style="padding: 40px 40px 20px 40px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
-            <h1 style="margin: 0 0 12px; font-size: 30px; font-weight: bold; line-height: 42px; color: <?php echo $brand_color; ?>; "><?php echo esc_html(get_bloginfo('name')); ?> <?php _e('Site Report','wp-client-reports'); ?></h1>
-            <p style="margin: 0; color:#212529;"><?php _e('From','wp-client-reports'); ?> <?php echo esc_html($start_date_formatted); ?> - <?php echo $end_date_formatted; ?></p>
+            <h1 style="margin: 0 0 12px; font-size: 30px; font-weight: bold; line-height: 42px; color: <?php echo $brand_color; ?>; "><?php echo esc_html($report_title_input); ?></h1>
+            <h5 style="font-weight:bold; font-size: 16px; line-height:18px; margin: 0px 0px 4px;"><?php echo $date_formatted; ?></h5>
         </td>
         </tr>
         <!-- end copy -->
@@ -764,7 +824,7 @@ function wp_client_reports_send_email_report() {
     
     $body = ob_get_clean();
         
-    $subject = get_bloginfo('name') . ' ' . __('Site Report','wp-client-reports');
+    $subject = $report_title_input;
     $headers[] = 'Content-Type: text/html; charset=UTF-8';
     $headers[] = 'From: ' . get_bloginfo('name') . ' <' . get_bloginfo('admin_email') . '>';
     
@@ -773,10 +833,11 @@ function wp_client_reports_send_email_report() {
 
 
 function wp_client_reports_render_big_number($title, $id) {
+    $allowed_html = ['br' => [] ];
     ?>
     <div class="wp-client-reports-big-number">
-        <h2 id="<?php echo $id; ?>">0</h2>
-        <h3><?php echo $title; ?></h3>
+        <h2 id="<?php echo esc_attr($id); ?>">0</h2>
+        <h3><?php echo wp_kses($title, $allowed_html); ?></h3>
     </div><!-- .wp-client-reports-big-number -->
     <?php
 }
@@ -813,9 +874,9 @@ function wp_client_reports_render_email_row($stat1, $label1, $stat2, $label2) {
 
 
 function wp_client_reports_render_email_big_number($stat, $label) {
-    $brand_color = wp_client_reports_get_brand_color();
-    $allowed_html = ['br' => [] ];
-    if ($stat && $label) {
+    if (isset($stat) && isset($label)) {
+        $brand_color = wp_client_reports_get_brand_color();
+        $allowed_html = ['br' => [] ];
         ?>
         <h1 style="font-weight: bold; color: <?php echo esc_attr($brand_color); ?>; margin: 0px; font-size: 66px; line-height: 1em;"><?php echo esc_html($stat); ?></h1>
         <h5 style="text-transform: uppercase; color: #888888; font-size: 16px; line-height:18px; font-weight: 300; margin: 0px;"><?php echo wp_kses($label, $allowed_html); ?></h5>
@@ -850,7 +911,6 @@ function wp_client_reports_stats_email_updates($start_date, $end_date) {
         
     ?>
         
-        <!-- start copy -->
         <tr>
         <td bgcolor="#ffffff" align="left" style="padding: 20px 40px 40px 40px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 14px; line-height: 20px;">
             <h3 style="font-size:14px;margin:0px 0px 4px 0px;"><?php _e('WordPress Updates','wp-client-reports'); ?></h3>
@@ -899,7 +959,6 @@ function wp_client_reports_stats_email_updates($start_date, $end_date) {
             </table>
         </td>
         </tr>
-        <!-- end copy -->
     <?php
 }
 
@@ -915,14 +974,14 @@ function wp_client_reports_stats_email_content($start_date, $end_date) {
 
     wp_client_reports_render_email_row(
         $content_stats_data->posts_count, 
-        sprintf( __( 'Total %s Updates', 'wp-client-reports' ), '<br>' ), 
+        sprintf( __( 'Posts %s Added', 'wp-client-reports' ), '<br>' ), 
         $content_stats_data->pages_count, 
-        sprintf( __( 'WordPress %s Updates', 'wp-client-reports' ), '<br>' )
+        sprintf( __( 'Pages %s Added', 'wp-client-reports' ), '<br>' )
     );
 
     wp_client_reports_render_email_row(
         $content_stats_data->comments_count, 
-        sprintf( __( 'Plugin %s Updates', 'wp-client-reports' ), '<br>' ), 
+        sprintf( __( 'Comments %s Added', 'wp-client-reports' ), '<br>' ), 
         null, 
         null
     );
@@ -945,11 +1004,19 @@ function wp_client_reports_options_init(  ) {
 		__( 'Email Settings', 'wp-client-reports' ),
 		'wp_client_reports_email_section_callback',
 		'wp_client_reports_options_page'
+    );
+    
+    add_settings_field(
+		'wp_client_reports_default_title',
+		__( 'Default Report Title', 'wp-client-reports' ),
+		'wp_client_reports_default_title_render',
+		'wp_client_reports_options_page',
+		'wp_client_reports_email_section'
 	);
 
 	add_settings_field(
 		'wp_client_reports_default_email',
-		__( 'Default Email Address(es)', 'wp-client-reports' ),
+		__( 'Default Email Address(es) to Send to', 'wp-client-reports' ),
 		'wp_client_reports_default_email_render',
 		'wp_client_reports_options_page',
 		'wp_client_reports_email_section'
@@ -957,7 +1024,7 @@ function wp_client_reports_options_init(  ) {
 
 	add_settings_field(
 		'wp_client_reports_default_intro',
-		__( 'Default Email Intro', 'wp-client-reports' ),
+		__( 'Default Email Introduction', 'wp-client-reports' ),
 		'wp_client_reports_default_intro_render',
 		'wp_client_reports_options_page',
 		'wp_client_reports_email_section'
@@ -997,6 +1064,20 @@ function wp_client_reports_options_init(  ) {
 
 
 /**
+ * Add default title field to the options page
+ */
+function wp_client_reports_default_title_render(  ) {
+    $option = get_option( 'wp_client_reports_default_title' );
+    if (!$option) {
+        $option = get_bloginfo('name') . ' ' . __('Site Report','wp-client-reports');
+    }
+	?>
+	<input type='text' name='wp_client_reports_default_title' value='<?php echo esc_attr($option); ?>'class="regular-text">
+	<?php
+}
+
+
+/**
  * Add default email field to the options page
  */
 function wp_client_reports_default_email_render(  ) {
@@ -1005,7 +1086,7 @@ function wp_client_reports_default_email_render(  ) {
         $option = get_bloginfo('admin_email');
     }
 	?>
-	<input type='email' name='wp_client_reports_default_email' value='<?php echo esc_attr($option); ?>'class="regular-text">
+	<input type='text' name='wp_client_reports_default_email' value='<?php echo esc_attr($option); ?>'class="regular-text">
 	<?php
 }
 
@@ -1062,13 +1143,15 @@ function wp_client_reports_enable_content_stats_render(  ) {
 function wp_client_reports_options_page(  ) {
 	?>
     <div class="wrap" id="wp-client-reports-options">
-        <h1><?php _e('WP Client Reports Settings','wp-client-reports'); ?></h1>
+        <h1 class="wp-heading-inline"><?php _e('WP Client Reports Settings','wp-client-reports'); ?></h1>
+        <a href="<?php echo admin_url( 'index.php?page=wp_client_reports' ); ?>" class="page-title-action">View Reports</a>
+        <h2 class="screen-reader-text">Filter posts list</h2>
         <form action='options.php' method='post' enctype="multipart/form-data">
             <div id="poststuff">
                 <div id="post-body" class="metabox-holder columns-2">
                     <div id="postbox-container-1" class="postbox-container">
                         <div id="submitdiv" class="postbox">
-                            <h2 class="hndle"><span><?php _e('Publish', 'wp-client-reports'); ?></span></h2>
+                            <h2 class="hndle"><span><?php _e('Actions', 'wp-client-reports'); ?></span></h2>
                             <div class="inside">
                                 <div id="major-publishing-actions">
                                     <div id="publishing-action">
@@ -1078,21 +1161,23 @@ function wp_client_reports_options_page(  ) {
                                 </div><!-- #major-publishing-actions -->
                             </div><!-- .inside -->
                         </div><!-- #submitdiv -->
-                        <div id="wp-client-reports-pro" class="postbox">
-                            <div class="inside">
-                                <p>
-                                    <?php _e('WP Client Reports Pro offers more branding options and additional reports such as:', 'wp-client-reports'); ?>
-                                </p>
-                                <ul>
-                                    <li>Add Logo and Brand Color to Reports</li>
-                                    <li>Google Analytics</li>
-                                    <li>Pingdom & Uptime Robot</li>
-                                    <li>WooCommerce</li>
-                                    <li>Gravity Forms & Ninja Forms</li>
-                                </ul>
-                                <div><a href="https://switchwp.com/plugins/wp-client-reports/?utm_source=wordpress&utm_medium=plugin_settings&utm_campaign=sidebar" class="button" target='_blank'>WP Client Reports Pro</a></div>
-                            </div>
-                        </div><!-- #wp-client-reports-pro -->
+                        <?php if ( !is_plugin_active( 'wp-client-reports-pro/wp_client_reports_pro.php' ) ) : ?>
+                            <div id="wp-client-reports-pro" class="postbox">
+                                <div class="inside">
+                                    <p>
+                                        <?php _e('WP Client Reports Pro offers more branding options and additional reports such as:', 'wp-client-reports'); ?>
+                                    </p>
+                                    <ul>
+                                        <li><?php _e('Add Logo and Brand Color to Reports'); ?></li>
+                                        <li><?php _e('Google Analytics'); ?></li>
+                                        <li><?php _e('Pingdom & Uptime Robot'); ?></li>
+                                        <li><?php _e('WooCommerce'); ?></li>
+                                        <li><?php _e('Gravity Forms & Ninja Forms'); ?></li>
+                                    </ul>
+                                    <div><a href="https://switchwp.com/plugins/wp-client-reports/?utm_source=wordpress&utm_medium=plugin_settings&utm_campaign=sidebar" class="button" target='_blank'><?php _e('WP Client Reports Pro'); ?></a></div>
+                                </div>
+                            </div><!-- #wp-client-reports-pro -->
+                        <?php endif; ?>
                         <div id="bugs-features" class="postbox">
                             <div class="inside">
                                 <p>
@@ -1108,27 +1193,24 @@ function wp_client_reports_options_page(  ) {
                         </div><!-- #bugs-features -->
                     </div><!-- .postbox-container -->
                     <div id="postbox-container-2" class="postbox-container">
-                        <?php
-                            settings_fields( 'wp_client_reports_options_page' );
+                        
+                        <?php settings_fields( 'wp_client_reports_options_page' ); ?>
 
-                            global $wp_settings_sections;
+                        <?php global $wp_settings_sections; ?>
 
-                            foreach ( $wp_settings_sections['wp_client_reports_options_page'] as $section ) {
+                        <?php foreach ( $wp_settings_sections['wp_client_reports_options_page'] as $section ) : ?>
+                            <div class="postbox wp-client-reports-settings-postbox">
+                                <?php if ( $section['title'] ) : ?>
+                                    <h2 class="hndle"><span><?php echo $section['title']; ?></span></h2>
+                                <?php endif; ?>
+                                <div class="inside">
+                                    <table class="form-table" role="presentation">
+                                        <?php do_settings_fields( 'wp_client_reports_options_page', $section['id'] ); ?>
+                                    </table>
+                                </div><!-- .inside -->
+                            </div><!-- .postbox -->
+                        <?php endforeach; ?>
 
-                                echo '<div class="postbox wp-client-reports-settings-postbox">';
-                                    if ( $section['title'] ) {
-                                        echo '<h2 class="hndle"><span>' . $section['title'] . '</span></h2>';
-                                    }
-                                echo '<div class="inside">';
-                                echo '<table class="form-table" role="presentation">';
-                                do_settings_fields( 'wp_client_reports_options_page', $section['id'] );
-                                echo '</table>';
-                                echo '</div><!-- .inside -->';
-                                echo '</div><!-- .postbox -->';
-
-                            }
-                            //do_settings_sections( 'wp_client_reports_options_page' );
-                        ?>
                     </div><!-- .postbox-container -->
                 </div><!-- #post-body -->
                 <br class="clear">
