@@ -19,8 +19,8 @@
             setDates(startDate, endDate, null);
         });
 
-        $("#wp-client-reports-force-update").click(function() {
-            var dataString = 'action=wp_client_reports_force_update';
+        $("#wp-client-reports-force-refresh").click(function() {
+            var dataString = 'action=wp_client_reports_force_refresh';
             $.ajax({
                 type: "GET",
                 url: ajaxurl,
@@ -147,6 +147,8 @@
 
         $("#wp-client-reports-send-email-report").submit(function(e) {
             e.preventDefault();
+            $("#send-report-spinner").show();
+            $('#wp-client-reports-send-email-report .button-primary').prop('disabled', true);
             var dataString = $("#wp-client-reports-send-email-report").serialize();
             $.ajax({
                 type: "GET",
@@ -155,7 +157,9 @@
                 dataType: 'json',
                 success: function(data, err) {
                     $("#wp-client-reports-send-email-report").hide();
+                    $("#send-report-spinner").hide();
                     $("#wp-client-reports-report-status").show();
+                    $('#wp-client-reports-send-email-report .button-primary').prop('disabled', false);
                 }
             });
         });

@@ -3,7 +3,7 @@
 Plugin Name: WP Client Reports
 Plugin URI: https://switchwp.com/wp-client-reports/
 Description: Send beautiful client maintenance reports with plugin and theme update tracking and more
-Version: 1.0.3
+Version: 1.0.4
 Author: SwitchWP
 Author URI: https://switchwp.com/
 Text Domain: wp-client-reports
@@ -45,6 +45,9 @@ function wp_client_reports_scripts() {
 add_action( 'admin_print_scripts', 'wp_client_reports_scripts' );
 
 
+/**
+ * Add Reports and Settings links into plugin page information
+ */
 add_filter( 'plugin_action_links', 'wp_client_reports_plugin_page_links1', 10, 2 );
 function wp_client_reports_plugin_page_links1( $links_array, $plugin_file_name ){
 	if( strpos( $plugin_file_name, basename(__FILE__) ) ) {
@@ -55,6 +58,9 @@ function wp_client_reports_plugin_page_links1( $links_array, $plugin_file_name )
 }
 
 
+/**
+ * Add Docs links into plugin page information
+ */
 add_filter( 'plugin_row_meta', 'wp_client_reports_plugin_page_links2', 10, 4 );
 function wp_client_reports_plugin_page_links2( $links_array, $plugin_file_name, $plugin_data, $status ) {
     if ( strpos( $plugin_file_name, basename(__FILE__) ) ) {
@@ -97,7 +103,9 @@ function wp_client_reports_data_install() {
 }
 
 
-
+/**
+ * Load actions if options are enabled
+ */
 add_action( 'admin_init', 'wp_client_reports_load_actions', 985 );
 function wp_client_reports_load_actions(){
     
@@ -136,6 +144,15 @@ function wp_client_reports_check_for_updates_daily_schedule(){
         //Schedule the event for right now, then to repeat daily using the hook 'wp_client_reports_check_for_updates_daily'
         wp_schedule_event( strtotime('00:00:00'), 'daily', 'wp_client_reports_check_for_updates_daily' );
     }
+}
+
+
+/**
+ * On plugin deactivation remove the scheduled events
+ */
+register_deactivation_hook( __FILE__, 'wp_client_reports_check_for_updates_daily_schedule_clear' );
+function wp_client_reports_check_for_updates_daily_schedule_clear() {
+     wp_clear_scheduled_hook( 'wp_client_reports_check_for_updates_daily' );
 }
 
 
@@ -313,14 +330,16 @@ function wp_client_reports_track_update( $thing_to_track ) {
 /**
  * Add a widget to the dashboard.
  */
-function wp_client_reports_add_dashboard_widget() {
-	wp_add_dashboard_widget(
-		'wp_client_reports_last30_widget',         // Widget slug.
-		__('Updates Run - Last 30 Days', 'wp-client-reports'),         // Title.
-		'wp_client_reports_last30_widget_function' // Display function.
-	);
-}
 add_action( 'wp_dashboard_setup', 'wp_client_reports_add_dashboard_widget' );
+function wp_client_reports_add_dashboard_widget() {
+    if (current_user_can('manage_options')) {
+        wp_add_dashboard_widget(
+            'wp_client_reports_last30_widget',         // Widget slug.
+            __('Updates Run - Last 30 Days', 'wp-client-reports'),         // Title.
+            'wp_client_reports_last30_widget_function' // Display function.
+        );
+    }
+}
 
 
 /**
@@ -364,7 +383,7 @@ function wp_client_reports_add_admin_menu(  ) {
 
 
 /**
- * Stats page for updates
+ * Main WP Client Reports page
  */
 function wp_client_reports_stats_page() {
     $default_title = get_option( 'wp_client_reports_default_title' );
@@ -383,7 +402,7 @@ function wp_client_reports_stats_page() {
                 <div class="wp-client-reports-date-chooser-area">
                     <a href="#TB_inline?width=600&height=550&inlineId=wp-client-reports-which-email-modal" id="wp-client-reports-email-report" class="thickbox button wp-client-reports-email-report-button"><?php _e('Email Report','wp-client-reports'); ?> <span class="dashicons dashicons-email"></span></a>
                     <a href="<?php echo admin_url( 'options-general.php?page=wp_client_reports' ); ?>" class="button"><?php _e('Settings','wp-client-reports'); ?> <span class="dashicons dashicons-admin-settings"></span></a>
-                    <button id="wp-client-reports-force-update" class="button wp-client-reports-force-update-button"><?php _e('Refresh','wp-client-reports'); ?> <span class="dashicons dashicons-update-alt"></span></button>
+                    <button id="wp-client-reports-force-refresh" class="button wp-client-reports-force-refresh-button"><?php _e('Refresh','wp-client-reports'); ?> <span class="dashicons dashicons-update-alt"></span></button>
                     <button id="wp-client-reports-date-chooser-button" class="button button-primary wp-client-reports-date-chooser-button"><span id="wp-client-reports-button-label"><?php _e('Last 30 Days','wp-client-reports'); ?></span> <span class="dashicons dashicons-arrow-down"></span></button><!-- #wp-client-reports-date-chooser-menu -->
                     <div id="wp-client-reports-date-chooser" style="display:none;">
                         <div class="date-chooser-presets">
@@ -435,7 +454,7 @@ function wp_client_reports_stats_page() {
                     <input type="hidden" name="action" value="wp_client_reports_send_email_report">
                     <input type="hidden" name="start" class="from_value" id="start_date_email">
                     <input type="hidden" name="end" class="to_value" id="end_date_email">
-                    <p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Send Now"></p>
+                    <p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Send Now"><img src="<?php echo admin_url(); ?>images/spinner-2x.gif" id="send-report-spinner" style="display:none;"></p>
                 </form>
                 <div class="notice notice-success wp-client-reports-success" id="wp-client-reports-report-status" style="display:none;margin-top:26px;">
                     <p><?php _e( 'Report has been sent!', 'wp-client-reports' ); ?></p>
@@ -448,7 +467,7 @@ function wp_client_reports_stats_page() {
 
 
 /**
- * Stats page for updates
+ * Software Updates section
  */
 function wp_client_reports_stats_page_updates() {
     ?>
@@ -507,7 +526,7 @@ function wp_client_reports_stats_page_updates() {
 
 
 /**
- * Ajax call for stats data
+ * Ajax call for software updates stats data
  */
 function wp_client_reports_updates_data() {
 
@@ -529,6 +548,10 @@ function wp_client_reports_updates_data() {
 
 }
 
+
+/**
+ * Validate dates anytime you get an request for data
+ */
 function wp_client_reports_validate_dates($start, $end) {
     $dates = new \stdClass;
     $timezone_string = get_option('timezone_string');
@@ -549,7 +572,7 @@ function wp_client_reports_validate_dates($start, $end) {
 
 
 /**
- * Get the stats data from the database
+ * Get the software updates data from the database
  */
 function wp_client_reports_get_updates_data($start_date, $end_date) {
 
@@ -590,6 +613,9 @@ function wp_client_reports_get_updates_data($start_date, $end_date) {
 }
 
 
+/**
+ * Filter the data when a report email is being put together and add software updates
+ */
 add_filter('wp_client_reports_email_data', 'wp_client_reports_email_updates_data', 11, 3);
 function wp_client_reports_email_updates_data($data, $start_date, $end_date) {
     $updates = new \stdClass;
@@ -600,18 +626,23 @@ function wp_client_reports_email_updates_data($data, $start_date, $end_date) {
 
 
 /**
- * Force an update to the update statistics
+ * Force an update to the software update statistics
  */
-add_action('wp_ajax_wp_client_reports_force_update', 'wp_client_reports_force_update');
-function wp_client_reports_force_update() {
+add_action('wp_ajax_wp_client_reports_force_refresh', 'wp_client_reports_force_refresh');
+function wp_client_reports_force_refresh() {
+
     wp_client_reports_check_for_updates();
+
+    do_action('wp_client_reports_force_update');
+
     print json_encode(['status'=>'success']);
     wp_die();
+
 }
 
 
 /**
- * Ajax call for stats data
+ * Ajax call for content stats data
  */
 function wp_client_reports_content_stats_data() {
 
@@ -635,7 +666,7 @@ function wp_client_reports_content_stats_data() {
 
 
 /**
- * Get the stats data from the database
+ * Get the content stats data from the database
  */
 function wp_client_reports_get_content_stats_data($start_date, $end_date) {
 
@@ -663,6 +694,9 @@ function wp_client_reports_get_content_stats_data($start_date, $end_date) {
 }
 
 
+/**
+ * Filter the data when a report email is being put together and add content stats
+ */
 add_filter('wp_client_reports_email_data', 'wp_client_reports_email_content_stats_data', 11, 3);
 function wp_client_reports_email_content_stats_data($data, $start_date, $end_date) {
     $updates = new \stdClass;
@@ -673,7 +707,7 @@ function wp_client_reports_email_content_stats_data($data, $start_date, $end_dat
 
 
 /**
- * Stats page for updates
+ * Stats page for content stats
  */
 function wp_client_reports_stats_page_content() {
     ?>
@@ -819,6 +853,8 @@ function wp_client_reports_send_email_report() {
         <!-- end button -->
     
     <?php
+
+    do_action('wp_client_reports_stats_email_after');
     
     include("email/report-email-footer.php");
     
@@ -832,6 +868,9 @@ function wp_client_reports_send_email_report() {
 }
 
 
+/**
+ * Render a big number in the HTML report page
+ */
 function wp_client_reports_render_big_number($title, $id) {
     $allowed_html = ['br' => [] ];
     ?>
@@ -843,6 +882,9 @@ function wp_client_reports_render_big_number($title, $id) {
 }
 
 
+/**
+ * Render an email header
+ */
 function wp_client_reports_render_email_header($title) {
     ?>
     <tr>
@@ -854,6 +896,9 @@ function wp_client_reports_render_email_header($title) {
 }
 
 
+/**
+ * Render an email row
+ */
 function wp_client_reports_render_email_row($stat1, $label1, $stat2, $label2) {
     ?>
     <tr>
@@ -873,6 +918,9 @@ function wp_client_reports_render_email_row($stat1, $label1, $stat2, $label2) {
 }
 
 
+/**
+ * Render a big number in the emailed report
+ */
 function wp_client_reports_render_email_big_number($stat, $label) {
     if (isset($stat) && isset($label)) {
         $brand_color = wp_client_reports_get_brand_color();
@@ -887,7 +935,7 @@ function wp_client_reports_render_email_big_number($stat, $label) {
 
 
 /**
- * Stats page for updates
+ * Email section for software updates
  */
 function wp_client_reports_stats_email_updates($start_date, $end_date) {
     $updates_data = wp_client_reports_get_updates_data($start_date, $end_date);
@@ -964,7 +1012,7 @@ function wp_client_reports_stats_email_updates($start_date, $end_date) {
 
 
 /**
- * Stats page for updates
+ * Email section for content stats
  */
 function wp_client_reports_stats_email_content($start_date, $end_date) {
     $content_stats_data = wp_client_reports_get_content_stats_data($start_date, $end_date);
@@ -989,7 +1037,7 @@ function wp_client_reports_stats_email_content($start_date, $end_date) {
 
 
 /**
- * Register the options that will be available on the options page
+ * Register the WP CLient Report settings
  */
 add_action( 'admin_init', 'wp_client_reports_options_init', 10 );
 function wp_client_reports_options_init(  ) {
@@ -1111,7 +1159,7 @@ function wp_client_reports_email_section_callback(  ) {
 
 
 /**
- * Add default intro field to the options page
+ * Enable Software Updates Toggle Switch
  */
 function wp_client_reports_enable_updates_render(  ) {
 	$option = get_option( 'wp_client_reports_enable_updates' );
@@ -1124,7 +1172,7 @@ function wp_client_reports_enable_updates_render(  ) {
 }
 
 /**
- * Add default intro field to the options page
+ * Enable Content Stats Toggle Switch
  */
 function wp_client_reports_enable_content_stats_render(  ) {
 	$option = get_option( 'wp_client_reports_enable_content_stats' );
@@ -1138,7 +1186,7 @@ function wp_client_reports_enable_content_stats_render(  ) {
 
 
 /**
- * Create the basic structure for the options page
+ * Create the WP Client Reports Settings Page
  */
 function wp_client_reports_options_page(  ) {
 	?>
@@ -1277,4 +1325,101 @@ function wp_client_reports_convert_date_format($format) {
     ];
     $moment_js_format = strtr($format, $replacements);
     return $moment_js_format;
+}
+
+
+/**
+ * Remove dashes from dates and other places you want them cleared
+ */
+function wp_client_reports_nodash($text) {
+    return str_replace('-', '_', $text);
+}
+
+/**
+ * Delete all transients with a key prefix.
+ *
+ * @param string $prefix The key prefix.
+ */
+function wp_client_reports_delete_transients( $prefix ) {
+    wp_client_reports_delete_transients_from_keys( wp_client_reports_search_database_for_transients_by_prefix( $prefix ) );
+}
+ 
+/**
+ * Searches the database for transients stored there that match a specific prefix.
+ *
+ * @param  string $prefix Prefix to search for.
+ * @return array|bool     Nested array response for wpdb->get_results or false on failure.
+ */
+function wp_client_reports_search_database_for_transients_by_prefix( $prefix ) {
+ 
+    global $wpdb;
+ 
+    // Add our prefix after concating our prefix with the _transient prefix
+    $prefix = $wpdb->esc_like( '_transient_' . $prefix . '_' );
+ 
+    // Build up our SQL query
+    $sql = "SELECT `option_name` FROM $wpdb->options WHERE `option_name` LIKE '%s'";
+ 
+    // Execute our query
+    $transients = $wpdb->get_results( $wpdb->prepare( $sql, $prefix . '%' ), ARRAY_A );
+ 
+    // If if looks good, pass it back
+    if ( $transients && ! is_wp_error( $transients ) ) {
+        return $transients;
+    }
+ 
+    // Otherise return false
+    return false;
+}
+ 
+/**
+ * Expects a passed in multidimensional array of transient keys.
+ *
+ * array(
+ *     array( 'option_name' => '_transient_blah_blah' ),
+ *     array( 'option_name' => 'transient_another_one' ),
+ * )
+ *
+ * Can also pass in an array of transient names.
+ *
+ * @param  array|string $transients  Nested array of transients, keyed by option_name,
+ *                                   or array of names of transients.
+ * @return array|bool                Count of total vs deleted or false on failure.
+ */
+function wp_client_reports_delete_transients_from_keys( $transients ) {
+ 
+    if ( ! isset( $transients ) ) {
+        return false;
+    }
+ 
+    // If we get a string key passed in, might as well use it correctly
+    if ( is_string( $transients ) ) {
+        $transients = array( array( 'option_name' => $transients ) );
+    }
+ 
+    // If its not an array, we can't do anything
+    if ( ! is_array( $transients ) ) {
+        return false;
+    }
+ 
+    $results = array();
+ 
+    // Loop through our transients
+    foreach ( $transients as $transient ) {
+ 
+        if ( is_array( $transient ) ) {
+ 
+            // If we have an array, grab the first element
+            $transient = current( $transient );
+        }
+ 
+        // Remove that sucker
+        $results[ $transient ] = delete_transient( str_replace( '_transient_', '', $transient ) );
+    }
+ 
+    // Return an array of total number, and number deleted
+    return array(
+        'total'   => count( $results ),
+        'deleted' => array_sum( $results ),
+    );
 }

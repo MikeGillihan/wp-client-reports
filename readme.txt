@@ -61,6 +61,10 @@ With this basic version there isn't a lot to customize. We are working on adding
 
 == Changelog ==
 
+= 1.0.4 =
+* Allow title of report to be customized
+* Fix issue with sending to multiple email addresses
+
 = 1.0.3 =
 * Restructure parts of the plugin for more consistency
 * Add content stats section
