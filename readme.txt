@@ -4,24 +4,28 @@ Donate link: https://switchwp.com/plugins/wp-client-reports/
 Tags:  reports, client reports, reporting, statistics, analytics, maintenance, updates, plugin updates, theme updates
 Requires at least: 5.0.0
 Tested up to: 5.3.2
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 Requires PHP: 5.6.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Send beautiful client maintenance reports, including software update statistics for plugins, themes, and wordpress. Includes a reporting analytics screen and the ability to email clean professional html reports to your client.
+Send professional client maintenance report emails, including software update statistics for plugins, themes, and WordPress.
 
 == Description ==
 
-The perfect report builder plugin for agencies, freelancers and site maintainers who regularly update their client's sites on a weekly, monthly, or quarterly basis. The plugin tracks what updates have happened and records them daily.
+Deliver confidence and prove your value routinely to clients and stakeholders.
 
-You can use the beautiful reporting analytics screen to show what updates have happened within a custom amount of time such as last month, this month, or last 30 days.
+== Client Website Maintenance Reports ==
 
-Send an HTML email with update statistics whenever you complete updates to show the value of your work to your client or other site stakeholders. No PDF's here, just a nicely designed email.
+The perfect maintenance report builder plugin for agencies, freelancers and site maintainers who update their client's sites on a weekly, monthly, or quarterly basis. The plugin tracks what updates have happened and records them daily.
+
+You can use the cleanly designed reporting analytics screen to show the updates that have happened within amounts of time such as last month, this month, last 30 days, or a custom length.
+
+Send a professional looking email including update statistics whenever you complete updates to show the value of your work to your client or other site stakeholders. No PDF's here, just a nicely designed email.
 
 == Pro Version ==
 
-[WP Client Reports Pro](https://switchwp.com/plugins/wp-client-reports/?utm_source=wporg&utm_medium=readme&utm_campaign=pro) allows you to self brand the report with your logo and company colors. It also adds a number of integrations with other services and plugins to display their statistics.
+[WP Client Reports Pro](https://switchwp.com/plugins/wp-client-reports/?utm_source=wporg&utm_medium=readme&utm_campaign=pro) allows you to self brand the maintenance report email with your logo and company color. It also adds a number of optional integrations with other services and plugins to display their statistics.
 
 - Google Analytics
 - Gravity Forms & Ninja Forms
@@ -60,6 +64,9 @@ With this basic version there isn't a lot to customize. We are working on adding
 
 
 == Changelog ==
+
+= 1.0.5 =
+* Check for updates after each plugin/theme update
 
 = 1.0.4 =
 * Allow title of report to be customized

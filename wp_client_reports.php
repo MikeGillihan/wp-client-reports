@@ -3,7 +3,7 @@
 Plugin Name: WP Client Reports
 Plugin URI: https://switchwp.com/wp-client-reports/
 Description: Send beautiful client maintenance reports with plugin and theme update tracking and more
-Version: 1.0.4
+Version: 1.0.5
 Author: SwitchWP
 Author URI: https://switchwp.com/
 Text Domain: wp-client-reports
@@ -14,7 +14,7 @@ if( !defined( 'ABSPATH' ) )
 	exit;
 
 
-define( 'WP_CLIENT_REPORTS_VERSION', '1.0.4' );
+define( 'WP_CLIENT_REPORTS_VERSION', '1.0.5' );
 
 
 /**
@@ -153,6 +153,17 @@ function wp_client_reports_check_for_updates_daily_schedule(){
 register_deactivation_hook( __FILE__, 'wp_client_reports_check_for_updates_daily_schedule_clear' );
 function wp_client_reports_check_for_updates_daily_schedule_clear() {
      wp_clear_scheduled_hook( 'wp_client_reports_check_for_updates_daily' );
+}
+
+
+/**
+ * After an update has run, check and log in database
+ */
+add_action( 'upgrader_process_complete', 'wp_client_reports_after_update',10, 2);
+function wp_client_reports_after_update( $upgrader_object, $options ) {
+    if ($options['action'] == 'update' ){
+        wp_client_reports_check_for_updates();
+    }
 }
 
 
@@ -443,10 +454,10 @@ function wp_client_reports_stats_page() {
                             </tr>
                             <tr>
                                 <th scope="row"><label for="report-email"><?php _e('Send Report Email To','wp-client-reports'); ?></label></th>
-                                <td><input name="report_email" type="text" id="report-email" value="<?php echo esc_attr($default_email); ?>" class="regular-text"></td>
+                                <td><input name="report_email" type="text" id="report-email" value="<?php echo esc_attr($default_email); ?>" class="regular-text"><p class="description"><?php _e('You can comma separate multiple addresses'); ?></p></td>
                             </tr>
                             <tr>
-                                <th scope="row"><label for="report-intro"><?php _e('Report Email Introduction','wp-client-reports'); ?></label></th>
+                                <th scope="row"><label for="report-intro"><?php _e('Report Email Introduction (optional)','wp-client-reports'); ?></label></th>
                                 <td><textarea name="report_intro" id="report-intro" class="large-text"><?php echo esc_attr($default_intro); ?></textarea></td>
                             </tr>
                         </tbody>
@@ -1072,7 +1083,7 @@ function wp_client_reports_options_init(  ) {
 
 	add_settings_field(
 		'wp_client_reports_default_intro',
-		__( 'Default Email Introduction', 'wp-client-reports' ),
+		__( 'Default Email Introduction (optional)', 'wp-client-reports' ),
 		'wp_client_reports_default_intro_render',
 		'wp_client_reports_options_page',
 		'wp_client_reports_email_section'
@@ -1135,6 +1146,7 @@ function wp_client_reports_default_email_render(  ) {
     }
 	?>
 	<input type='text' name='wp_client_reports_default_email' value='<?php echo esc_attr($option); ?>'class="regular-text">
+    <p class="description"><?php _e('You can comma separate multiple addresses'); ?></p>
 	<?php
 }
 
