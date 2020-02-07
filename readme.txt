@@ -15,7 +15,7 @@ Send beautiful client maintenance reports, including software update statistics 
 
 The perfect report builder plugin for agencies, freelancers and site maintainers who regularly update their client's sites on a weekly, monthly, or quarterly basis. The plugin tracks what updates have happened and records them daily.
 
-You can use the beautiful reporting analytics screen to show what updates have happened within a custom amounts of time such as last month, this month, or last 30 days.
+You can use the beautiful reporting analytics screen to show what updates have happened within a custom amount of time such as last month, this month, or last 30 days.
 
 Send an HTML email with update statistics whenever you complete updates to show the value of your work to your client or other site stakeholders. No PDF's here, just a nicely designed email.
 
@@ -36,7 +36,7 @@ Have an idea that should be added? Let me know at [SwitchWP](https://switchwp.co
 1. Upload the plugin files to the `/wp-content/plugins/wp-client-reports` directory, or install the zipped plugin through the WordPress plugins screen directly.
 2. Activate the WP Client Reports plugin through the 'Plugins' screen in WordPress.
 3. Use the Settings->WP Client Reports screen to configure the default settings.
-4. Use the Dashboard->Reports screen to view update stistics.
+4. Use the Dashboard->Reports screen to view update statistics.
 
 
 == Frequently Asked Questions ==
@@ -55,8 +55,8 @@ With this basic version there isn't a lot to customize. We are working on adding
 1. The WP Client Reports main report screen
 2. Easily switch dates to view states for any time period
 3. Send an html email with friendly statistics to your client
-3. Adds an optional dashboard widget
-4. Preset email and a an introduction message
+3. Adds a handy dashboard widget
+4. Manage email settings and which sections are enabled
 
 
 == Changelog ==
