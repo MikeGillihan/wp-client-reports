@@ -3,7 +3,7 @@
 Plugin Name: WP Client Reports
 Plugin URI: https://switchwp.com/wp-client-reports/
 Description: Send beautiful client maintenance reports with plugin and theme update tracking and more
-Version: 1.0.5
+Version: 1.0.6
 Author: SwitchWP
 Author URI: https://switchwp.com/
 Text Domain: wp-client-reports
@@ -14,7 +14,7 @@ if( !defined( 'ABSPATH' ) )
 	exit;
 
 
-define( 'WP_CLIENT_REPORTS_VERSION', '1.0.5' );
+define( 'WP_CLIENT_REPORTS_VERSION', '1.0.6' );
 
 
 /**
@@ -1053,6 +1053,7 @@ function wp_client_reports_stats_email_content($start_date, $end_date) {
 add_action( 'admin_init', 'wp_client_reports_options_init', 10 );
 function wp_client_reports_options_init(  ) {
 
+    register_setting( 'wp_client_reports_options_page', 'wp_client_reports_default_title' );
 	register_setting( 'wp_client_reports_options_page', 'wp_client_reports_default_email' );
     register_setting( 'wp_client_reports_options_page', 'wp_client_reports_default_intro' );
     register_setting( 'wp_client_reports_options_page', 'wp_client_reports_enable_updates' );
