@@ -291,6 +291,11 @@
     color:#FFF;
     border:0px;
 }
+.wp-client-reports-error {
+    background:#dc3232;
+    color:#FFF;
+    border:0px;
+}
 
 #wp-client-reports-options #publishing-action p.submit {
     margin:0px;

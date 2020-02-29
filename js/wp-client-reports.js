@@ -151,15 +151,22 @@
             $('#wp-client-reports-send-email-report .button-primary').prop('disabled', true);
             var dataString = $("#wp-client-reports-send-email-report").serialize();
             $.ajax({
-                type: "GET",
+                type: "POST",
                 url: ajaxurl,
                 data: dataString,
                 dataType: 'json',
                 success: function(data, err) {
-                    $("#wp-client-reports-send-email-report").hide();
-                    $("#send-report-spinner").hide();
-                    $("#wp-client-reports-report-status").show();
-                    $('#wp-client-reports-send-email-report .button-primary').prop('disabled', false);
+                    if (data.status == 'success') {
+                        $("#wp-client-reports-send-email-report").hide();
+                        $("#send-report-spinner").hide();
+                        $("#wp-client-reports-report-status").addClass('wp-client-reports-success').removeClass('wp-client-reports-error').show().find('p').text(data.message);
+                        $('#wp-client-reports-send-email-report .button-primary').prop('disabled', false);
+                    } else {
+                        $("#wp-client-reports-send-email-report").hide();
+                        $("#send-report-spinner").hide();
+                        $("#wp-client-reports-report-status").addClass('wp-client-reports-error').removeClass('wp-client-reports-success').show().find('p').text(data.message);
+                        $('#wp-client-reports-send-email-report .button-primary').prop('disabled', false);
+                    }
                 }
             });
         });

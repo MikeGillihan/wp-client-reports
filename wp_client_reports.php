@@ -467,8 +467,8 @@ function wp_client_reports_stats_page() {
                     <input type="hidden" name="end" class="to_value" id="end_date_email">
                     <p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Send Now"><img src="<?php echo admin_url(); ?>images/spinner-2x.gif" id="send-report-spinner" style="display:none;"></p>
                 </form>
-                <div class="notice notice-success wp-client-reports-success" id="wp-client-reports-report-status" style="display:none;margin-top:26px;">
-                    <p><?php _e( 'Report has been sent!', 'wp-client-reports' ); ?></p>
+                <div class="notice wp-client-reports-success" id="wp-client-reports-report-status" style="display:none;margin-top:26px;">
+                    <p></p>
                 </div>
             </div><!-- #wp-client-reports-which-email-modal -->
 
@@ -759,17 +759,17 @@ function wp_client_reports_stats_page_content() {
 add_action('wp_ajax_wp_client_reports_send_email_report', 'wp_client_reports_send_email_report');
 function wp_client_reports_send_email_report() {
 
-    $report_title_input = sanitize_text_field($_GET['report_title']);
-    if (strpos($_GET['report_email'], ',') !== false) {
+    $report_title_input = sanitize_text_field($_POST['report_title']);
+    if (strpos($_POST['report_email'], ',') !== false) {
         $report_email_input = [];
-        $temp_email_array = explode(",", $_GET['report_email']);
+        $temp_email_array = explode(",", $_POST['report_email']);
         if (is_array($temp_email_array)) {
             foreach($temp_email_array as $email) {
                 $report_email_input[] = sanitize_email($email);
             }
         }
     } else {
-        $report_email_input = sanitize_email($_GET['report_email']);
+        $report_email_input = sanitize_email($_POST['report_email']);
     }
     $report_intro_input = stripslashes(sanitize_textarea_field($_POST['report_intro']));
     $start = sanitize_text_field($_POST['start']);
@@ -877,7 +877,16 @@ function wp_client_reports_send_email_report() {
     $headers[] = 'Content-Type: text/html; charset=UTF-8';
     $headers[] = 'From: ' . get_bloginfo('name') . ' <' . get_bloginfo('admin_email') . '>';
     
-    wp_mail( $report_email, $subject, $body, $headers );
+    $sent = wp_mail( $report_email, $subject, $body, $headers );
+
+    if ($sent) {
+        echo json_encode(['status' => 'success', 'message' => __( 'Report has been sent!', 'wp-client-reports' )]);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => __( 'There was an error sending the email.', 'wp-client-reports' )]);
+    }
+
+    wp_die();
+
 }
 
 
