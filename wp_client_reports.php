@@ -368,7 +368,7 @@ function wp_client_reports_last30_widget_function() {
     <div class="wp-client-reports-big-numbers wp-client-reports-postbox wp-client-reports-last30-widget">
         <div class="wp-client-reports-big-number">
             <h2 id="wp-client-reports-wp-update-count"><?php echo esc_html($updates_data->wp_updated); ?></h2>
-            <h3><?php printf( __( 'WordPress %s Updates', 'wp-client-reports' ), '<br>' ); ?></h3>
+            <h3><?php printf( __( 'WordPress %s Core Updates', 'wp-client-reports' ), '<br>' ); ?></h3>
         </div><!-- .wp-client-reports-big-number -->
         <div class="wp-client-reports-big-number">
             <h2 id="wp-client-reports-theme-update-count"><?php echo esc_html($updates_data->total_themes_updated); ?></h2>
@@ -494,7 +494,7 @@ function wp_client_reports_stats_page_updates() {
                                 'wp-client-reports-total-update-count'
                             );
                             wp_client_reports_render_big_number(
-                                sprintf( __( 'WordPress %s Updates', 'wp-client-reports' ), '<br>' ), 
+                                sprintf( __( 'WordPress %s Core Updates', 'wp-client-reports' ), '<br>' ), 
                                 'wp-client-reports-wp-update-count'
                             );
                             wp_client_reports_render_big_number(
@@ -510,7 +510,7 @@ function wp_client_reports_stats_page_updates() {
 
                     <div class="wp-client-report-section wp-client-report-border-top">
 
-                        <h3><?php _e('WordPress Updates','wp-client-reports'); ?></h3>
+                        <h3><?php _e('WordPress Core Updates','wp-client-reports'); ?></h3>
                         <ul id="wp-client-reports-wp-updates-list" class="wp-client-reports-list"></ul>
 
                     </div>
@@ -958,7 +958,7 @@ function wp_client_reports_stats_email_updates($start_date, $end_date) {
         $updates_data->total_updates, 
         sprintf( __( 'Total %s Updates', 'wp-client-reports' ), '<br>' ), 
         $updates_data->wp_updated, 
-        sprintf( __( 'WordPress %s Updates', 'wp-client-reports' ), '<br>' )
+        sprintf( __( 'WordPress %s Core Updates', 'wp-client-reports' ), '<br>' )
     );
 
     wp_client_reports_render_email_row(
@@ -972,7 +972,7 @@ function wp_client_reports_stats_email_updates($start_date, $end_date) {
         
         <tr>
         <td bgcolor="#ffffff" align="left" style="padding: 20px 40px 40px 40px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 14px; line-height: 20px;">
-            <h3 style="font-size:14px;margin:0px 0px 4px 0px;"><?php _e('WordPress Updates','wp-client-reports'); ?></h3>
+            <h3 style="font-size:14px;margin:0px 0px 4px 0px;"><?php _e('WordPress Core Updates','wp-client-reports'); ?></h3>
             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-top:solid 1px #dddddd;margin-bottom:30px;">
             <?php
             if ($updates_data->wp_updated > 0) : 
@@ -982,7 +982,7 @@ function wp_client_reports_stats_email_updates($start_date, $end_date) {
                     endif;
                 endforeach;
             else:
-                echo '<tr><td style="width:40%;padding:8px 0px 8px 0px;border-bottom:solid 1px #dddddd;">No WordPress Updates</td>';
+                echo '<tr><td style="width:40%;padding:8px 0px 8px 0px;border-bottom:solid 1px #dddddd;">No WordPress Core Updates</td>';
             endif;
             ?>
             </table>

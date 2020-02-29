@@ -217,7 +217,7 @@
                         }
                     });
                     if (data.wp_updated === 0) {
-                        $("#wp-client-reports-wp-updates-list").append('<li class="wp-client-reports-empty">No WordPress Updates</li>');
+                        $("#wp-client-reports-wp-updates-list").append('<li class="wp-client-reports-empty">No WordPress Core Updates</li>');
                     }
                     if (data.total_plugins_updated === 0) {
                         $("#wp-client-reports-plugin-updates-list").append('<li class="wp-client-reports-empty">No Plugin Updates</li>');
