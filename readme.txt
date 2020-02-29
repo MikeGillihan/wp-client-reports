@@ -4,7 +4,7 @@ Donate link: https://switchwp.com/plugins/wp-client-reports/
 Tags:  reports, client reports, reporting, statistics, analytics, maintenance, updates, plugin updates, theme updates
 Requires at least: 5.0.0
 Tested up to: 5.3.2
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 Requires PHP: 5.6.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -25,15 +25,16 @@ Send a professional looking email including update statistics whenever you compl
 
 == Pro Version ==
 
-[WP Client Reports Pro](https://switchwp.com/plugins/wp-client-reports/?utm_source=wporg&utm_medium=readme&utm_campaign=pro) allows you to self brand the maintenance report email with your logo and company color. It also adds a number of optional integrations with other services and plugins to display their statistics.
+[WP Client Reports Pro](https://switchwp.com/plugins/wp-client-reports/?utm_source=wporg&utm_medium=readme&utm_campaign=wpclientreports) allows you to self brand the maintenance report email with your logo and company color. It also adds a number of optional integrations with other services and plugins to display their statistics.
 
 - Google Analytics
 - Gravity Forms & Ninja Forms
 - Uptime Robot & Pingdom
+- UpdraftPlus & BackWPup
 - Mailchimp
 - WooCommerce
 
-Have an idea that should be added? Let me know at [SwitchWP](https://switchwp.com/plugins/wp-client-reports/?utm_source=wporg&utm_medium=readme&utm_campaign=idea).
+Have an idea that should be added? Let me know at [SwitchWP](https://switchwp.com/plugins/wp-client-reports/?utm_source=wporg&utm_medium=readme&utm_campaign=wpclientreports).
 
 == Installation ==
 
@@ -49,10 +50,6 @@ Have an idea that should be added? Let me know at [SwitchWP](https://switchwp.co
 
 WordPress by default does not track when updates have happened. WP Client Reports adds the functionality to do that, but that means that it cannot report on updates that happened before the plugin was installed.
 
-= Can I Modify the Reports? =
-
-With this basic version there isn't a lot to customize. We are working on adding functionality to the free version and may explore the idea of a pro version of the plugin as well with additional functionality.
-
 
 == Screenshots ==
 
@@ -64,6 +61,10 @@ With this basic version there isn't a lot to customize. We are working on adding
 
 
 == Changelog ==
+
+= 1.0.7 =
+* Fix issues with description formatting
+* Fix issue when selecting single date in chooser
 
 = 1.0.6 =
 * Fix saving issue with default report title

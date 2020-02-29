@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Project-Id-Version: WP Client Reports\n"
-"POT-Creation-Date: 2020-02-01 23:12-0600\n"
-"PO-Revision-Date: 2020-02-01 23:12-0600\n"
+"POT-Creation-Date: 2020-02-28 23:07-0600\n"
+"PO-Revision-Date: 2020-02-28 23:07-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.min.js\n"
 
-#: email/report-email-footer.php:26 wp_client_reports.php:432
+#: email/report-email-footer.php:26 wp_client_reports.php:443
 #, php-format
 msgid "Report created with %1$sWP Client Reports%2$s."
 msgstr ""
@@ -31,218 +31,226 @@ msgstr ""
 msgid "This email was sent by an administrator at %s."
 msgstr ""
 
-#: wp_client_reports.php:338
+#: wp_client_reports.php:349
 msgid "Updates Run - Last 30 Days"
 msgstr ""
 
-#: wp_client_reports.php:360 wp_client_reports.php:486
-#: wp_client_reports.php:950
+#: wp_client_reports.php:371 wp_client_reports.php:497
+#: wp_client_reports.php:972
 #, php-format
-msgid "WordPress %s Updates"
+msgid "WordPress %s Core Updates"
 msgstr ""
 
-#: wp_client_reports.php:364 wp_client_reports.php:494
-#: wp_client_reports.php:957
+#: wp_client_reports.php:375 wp_client_reports.php:505
+#: wp_client_reports.php:979
 #, php-format
 msgid "Theme %s Updates"
 msgstr ""
 
-#: wp_client_reports.php:368 wp_client_reports.php:490
-#: wp_client_reports.php:955
+#: wp_client_reports.php:379 wp_client_reports.php:501
+#: wp_client_reports.php:977
 #, php-format
 msgid "Plugin %s Updates"
 msgstr ""
 
-#: wp_client_reports.php:391 wp_client_reports.php:1120
+#: wp_client_reports.php:402 wp_client_reports.php:1143
 msgid "Site Report"
 msgstr ""
 
 #. Plugin Name of the plugin/theme
-#: wp_client_reports.php:401
+#: wp_client_reports.php:412
 msgid "WP Client Reports"
 msgstr ""
 
-#: wp_client_reports.php:403
+#: wp_client_reports.php:414
 msgid "Email Report"
 msgstr ""
 
-#: wp_client_reports.php:404
+#: wp_client_reports.php:415
 msgid "Settings"
 msgstr ""
 
-#: wp_client_reports.php:405
+#: wp_client_reports.php:416
 msgid "Refresh"
 msgstr ""
 
-#: wp_client_reports.php:406 wp_client_reports.php:414
+#: wp_client_reports.php:417 wp_client_reports.php:425
 msgid "Last 30 Days"
 msgstr ""
 
-#: wp_client_reports.php:410
+#: wp_client_reports.php:421
 msgid "Today"
 msgstr ""
 
-#: wp_client_reports.php:411
+#: wp_client_reports.php:422
 msgid "Yesterday"
 msgstr ""
 
-#: wp_client_reports.php:412
+#: wp_client_reports.php:423
 msgid "Last 7 Days"
 msgstr ""
 
-#: wp_client_reports.php:413
+#: wp_client_reports.php:424
 msgid "Last 14 Days"
 msgstr ""
 
-#: wp_client_reports.php:415
+#: wp_client_reports.php:426
 msgid "Last Month"
 msgstr ""
 
-#: wp_client_reports.php:416
+#: wp_client_reports.php:427
 msgid "This Month"
 msgstr ""
 
-#: wp_client_reports.php:421
+#: wp_client_reports.php:432
 msgid "Cancel"
 msgstr ""
 
-#: wp_client_reports.php:421
+#: wp_client_reports.php:432
 msgid "Apply"
 msgstr ""
 
-#: wp_client_reports.php:441
+#: wp_client_reports.php:452
 msgid "Report Title"
 msgstr ""
 
-#: wp_client_reports.php:445
+#: wp_client_reports.php:456
 msgid "Send Report Email To"
 msgstr ""
 
-#: wp_client_reports.php:449
-msgid "Report Email Introduction"
+#: wp_client_reports.php:457 wp_client_reports.php:1161
+msgid "You can comma separate multiple addresses"
 msgstr ""
 
 #: wp_client_reports.php:460
-msgid "Report has been sent!"
+msgid "Report Email Introduction (optional)"
 msgstr ""
 
-#: wp_client_reports.php:476 wp_client_reports.php:716
+#: wp_client_reports.php:487 wp_client_reports.php:727
 msgid "Toggle panel"
 msgstr ""
 
-#: wp_client_reports.php:476 wp_client_reports.php:944
-#: wp_client_reports.php:1083
+#: wp_client_reports.php:487 wp_client_reports.php:966
+#: wp_client_reports.php:1106
 msgid "Software Updates"
 msgstr ""
 
-#: wp_client_reports.php:482 wp_client_reports.php:948
+#: wp_client_reports.php:493 wp_client_reports.php:970
 #, php-format
 msgid "Total %s Updates"
 msgstr ""
 
-#: wp_client_reports.php:502 wp_client_reports.php:964
-msgid "WordPress Updates"
+#: wp_client_reports.php:513 wp_client_reports.php:986
+msgid "WordPress Core Updates"
 msgstr ""
 
-#: wp_client_reports.php:508 wp_client_reports.php:979
+#: wp_client_reports.php:519 wp_client_reports.php:1001
 msgid "Plugin Updates"
 msgstr ""
 
-#: wp_client_reports.php:514 wp_client_reports.php:994
+#: wp_client_reports.php:525 wp_client_reports.php:1016
 msgid "Theme Updates"
 msgstr ""
 
-#: wp_client_reports.php:716 wp_client_reports.php:1021
-#: wp_client_reports.php:1098
+#: wp_client_reports.php:727 wp_client_reports.php:1043
+#: wp_client_reports.php:1121
 msgid "Site Content"
 msgstr ""
 
-#: wp_client_reports.php:722 wp_client_reports.php:1025
+#: wp_client_reports.php:733 wp_client_reports.php:1047
 #, php-format
 msgid "Posts %s Added"
 msgstr ""
 
-#: wp_client_reports.php:726 wp_client_reports.php:1027
+#: wp_client_reports.php:737 wp_client_reports.php:1049
 #, php-format
 msgid "Pages %s Added"
 msgstr ""
 
-#: wp_client_reports.php:730 wp_client_reports.php:1032
+#: wp_client_reports.php:741 wp_client_reports.php:1054
 #, php-format
 msgid "Comments %s Added"
 msgstr ""
 
-#: wp_client_reports.php:801
+#: wp_client_reports.php:812
 msgid "From"
 msgstr ""
 
-#: wp_client_reports.php:844
+#: wp_client_reports.php:857
 msgid "Visit Website"
 msgstr ""
 
-#: wp_client_reports.php:1052
-msgid "Email Settings"
+#: wp_client_reports.php:883
+msgid "Report has been sent!"
 msgstr ""
 
-#: wp_client_reports.php:1059
-msgid "Default Report Title"
-msgstr ""
-
-#: wp_client_reports.php:1067
-msgid "Default Email Address(es) to Send to"
+#: wp_client_reports.php:885
+msgid "There was an error sending the email."
 msgstr ""
 
 #: wp_client_reports.php:1075
-msgid "Default Email Introduction"
+msgid "Email Settings"
+msgstr ""
+
+#: wp_client_reports.php:1082
+msgid "Default Report Title"
 msgstr ""
 
 #: wp_client_reports.php:1090
+msgid "Default Email Address(es) to Send to"
+msgstr ""
+
+#: wp_client_reports.php:1098
+msgid "Default Email Introduction (optional)"
+msgstr ""
+
+#: wp_client_reports.php:1113
 msgid "Enable Update Tracking"
 msgstr ""
 
-#: wp_client_reports.php:1105
+#: wp_client_reports.php:1128
 msgid "Enable Site Content Stats"
 msgstr ""
 
-#: wp_client_reports.php:1194
+#: wp_client_reports.php:1218
 msgid "WP Client Reports Settings"
 msgstr ""
 
-#: wp_client_reports.php:1202
+#: wp_client_reports.php:1226
 msgid "Actions"
 msgstr ""
 
-#: wp_client_reports.php:1216
+#: wp_client_reports.php:1240
 msgid ""
 "WP Client Reports Pro offers more branding options and additional reports "
 "such as:"
 msgstr ""
 
-#: wp_client_reports.php:1219
+#: wp_client_reports.php:1243
 msgid "Add Logo and Brand Color to Reports"
 msgstr ""
 
-#: wp_client_reports.php:1220
+#: wp_client_reports.php:1244
 msgid "Google Analytics"
 msgstr ""
 
-#: wp_client_reports.php:1221
+#: wp_client_reports.php:1245
 msgid "Pingdom & Uptime Robot"
 msgstr ""
 
-#: wp_client_reports.php:1222
+#: wp_client_reports.php:1246
 msgid "WooCommerce"
 msgstr ""
 
-#: wp_client_reports.php:1223
+#: wp_client_reports.php:1247
 msgid "Gravity Forms & Ninja Forms"
 msgstr ""
 
-#: wp_client_reports.php:1225
+#: wp_client_reports.php:1249
 msgid "WP Client Reports Pro"
 msgstr ""
 
-#: wp_client_reports.php:1237
+#: wp_client_reports.php:1261
 #, php-format
 msgid ""
 "Learn more about the plugin and its capabilities on the %1$sSwitchWP website"
