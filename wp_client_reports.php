@@ -64,7 +64,7 @@ function wp_client_reports_plugin_page_links1( $links_array, $plugin_file_name )
 add_filter( 'plugin_row_meta', 'wp_client_reports_plugin_page_links2', 10, 4 );
 function wp_client_reports_plugin_page_links2( $links_array, $plugin_file_name, $plugin_data, $status ) {
     if ( strpos( $plugin_file_name, basename(__FILE__) ) ) {
-        $links_array[] = '<a href="https://switchwp.com/docs/product/wp-client-reports/" target="_blank">Docs</a>';
+        $links_array[] = '<a href="https://switchwp.com/docs/product/wp-client-reports/?utm_source=wordpress&utm_medium=pluginscreen&utm_campaign=wpclientreports" target="_blank">Docs</a>';
     }
     return $links_array;
 }
@@ -440,7 +440,7 @@ function wp_client_reports_stats_page() {
 
             <?php if ( !is_plugin_active( 'wp-client-reports-pro/wp_client_reports_pro.php' ) ) : ?>
                 <p style="margin: 20px 0;text-align:center;">
-                    <?php printf( __( 'Report created with %1$sWP Client Reports%2$s.', 'wp-client-reports' ), '<a href="https://switchwp.com/plugins/wp-client-reports/?utm_source=wordpress&utm_medium=reports&utm_campaign=footer" target="_blank">', '</a>' ); ?>
+                    <?php printf( __( 'Report created with %1$sWP Client Reports%2$s.', 'wp-client-reports' ), '<a href="https://switchwp.com/plugins/wp-client-reports/?utm_source=wordpress&utm_medium=reports&utm_campaign=wpclientreports" target="_blank">', '</a>' ); ?>
                 </p>
             <?php endif; ?>
 
@@ -1235,7 +1235,7 @@ function wp_client_reports_options_page(  ) {
                                         <li><?php _e('WooCommerce'); ?></li>
                                         <li><?php _e('Gravity Forms & Ninja Forms'); ?></li>
                                     </ul>
-                                    <div><a href="https://switchwp.com/plugins/wp-client-reports/?utm_source=wordpress&utm_medium=plugin_settings&utm_campaign=sidebar" class="button" target='_blank'><?php _e('WP Client Reports Pro'); ?></a></div>
+                                    <div><a href="https://switchwp.com/plugins/wp-client-reports/?utm_source=wordpress&utm_medium=plugin_settings&utm_campaign=wpclientreports" class="button" target='_blank'><?php _e('WP Client Reports Pro'); ?></a></div>
                                 </div>
                             </div><!-- #wp-client-reports-pro -->
                         <?php endif; ?>
@@ -1243,7 +1243,7 @@ function wp_client_reports_options_page(  ) {
                             <div class="inside">
                                 <p>
                                     <?php
-                                        $sitelink = "<a href='https://switchwp.com/plugins/wp-client-reports/?utm_source=wordpress&utm_medium=plugin_settings&utm_campaign=sidebar' target='_blank'>";
+                                        $sitelink = "<a href='https://switchwp.com/plugins/wp-client-reports/?utm_source=wordpress&utm_medium=plugin_settings&utm_campaign=wpclientreports' target='_blank'>";
                                         $githublink = "<a href='https://github.com/TheJester12/wp-client-reports' target='_blank'>";
                                         $pluginlink = "<a href='https://wordpress.org/plugins/wp-client-reports/' target='_blank'>";
                                         $endlink = "</a>";
