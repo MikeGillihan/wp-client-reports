@@ -15,6 +15,11 @@
             $("#wp-client-reports-date-chooser").hide();
             var startDate = $("#from_value").val();
             var endDate = $("#to_value").val();
+            if (!startDate && endDate) {
+                startDate = endDate;
+            } else if (!endDate && startDate) {
+                endDate = startDate;
+            }
             getData(startDate, endDate);
             setDates(startDate, endDate, null);
         });
