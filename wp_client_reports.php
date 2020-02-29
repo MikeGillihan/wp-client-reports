@@ -458,7 +458,7 @@ function wp_client_reports_stats_page() {
                             </tr>
                             <tr>
                                 <th scope="row"><label for="report-intro"><?php _e('Report Email Introduction (optional)','wp-client-reports'); ?></label></th>
-                                <td><textarea name="report_intro" id="report-intro" class="large-text"><?php echo esc_attr($default_intro); ?></textarea></td>
+                                <td><textarea name="report_intro" id="report-intro" class="large-text"><?php echo esc_textarea($default_intro); ?></textarea></td>
                             </tr>
                         </tbody>
                     </table>
@@ -771,9 +771,9 @@ function wp_client_reports_send_email_report() {
     } else {
         $report_email_input = sanitize_email($_GET['report_email']);
     }
-    $report_intro_input = sanitize_text_field($_GET['report_intro']);
-    $start = sanitize_text_field($_GET['start']);
-    $end = sanitize_text_field($_GET['end']);
+    $report_intro_input = stripslashes(sanitize_textarea_field($_POST['report_intro']));
+    $start = sanitize_text_field($_POST['start']);
+    $end = sanitize_text_field($_POST['end']);
 
     if (isset($report_email_input)) {
         $report_email = $report_email_input;
@@ -783,7 +783,7 @@ function wp_client_reports_send_email_report() {
 
     $report_intro = null;
     if (isset($report_intro_input)) {
-        $report_intro = $report_intro_input;
+        $report_intro = wpautop($report_intro_input);
     }
 
     $dates = wp_client_reports_validate_dates($start, $end);
@@ -812,6 +812,8 @@ function wp_client_reports_send_email_report() {
         $date_formatted = __('From','wp-client-reports') . ' ' . esc_html($start_date_formatted) . ' - ' . $end_date_formatted;
     }
 
+    $allowed_html = ['br' => [], 'p' => [], 'strong' => [], 'em' => [], 'a' => ['href' => [] ] ];
+
     $brand_color = wp_client_reports_get_brand_color();
 
     ob_start();
@@ -835,7 +837,7 @@ function wp_client_reports_send_email_report() {
             <!-- start copy -->
             <tr>
             <td bgcolor="#ffffff" align="left" style="padding: 10px 40px 20px 40px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
-                <p style="margin: 0; color:#212529;"><?php echo esc_html($report_intro); ?></p>
+                <p style="margin: 0; color:#212529;"><?php echo wp_kses($report_intro, $allowed_html); ?></p>
             </td>
             </tr>
             <!-- end copy -->
@@ -1158,7 +1160,7 @@ function wp_client_reports_default_email_render(  ) {
 function wp_client_reports_default_intro_render(  ) {
 	$option = get_option( 'wp_client_reports_default_intro' );
 	?>
-	<textarea name='wp_client_reports_default_intro' class="large-text" rows="8" cols="50"><?php echo esc_attr($option); ?></textarea>
+	<textarea name='wp_client_reports_default_intro' class="large-text" rows="8" cols="50"><?php echo esc_textarea($option); ?></textarea>
 	<?php
 }
 
