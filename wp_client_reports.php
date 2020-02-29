@@ -1296,11 +1296,7 @@ function wp_client_reports_options_page(  ) {
  * Get brand color
  */
 function wp_client_reports_get_brand_color() {
-    if ( is_plugin_active( 'wp-client-reports-pro/wp_client_reports_pro.php' ) ) {
-        return get_option( 'wp_client_reports_pro_color', '#007cba' );
-    } else {
-        return '#007cba';
-    }
+    return apply_filters( 'wp_client_reports_brand_color', '#007cba' );
 }
 
 
