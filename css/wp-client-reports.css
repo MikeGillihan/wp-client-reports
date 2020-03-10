@@ -134,6 +134,28 @@
     box-sizing: border-box;
     position: relative;
 }
+#wp-client-reports-date-chooser #date-range .ui-datepicker {
+    padding:0px;
+    border:0px;
+}
+#wp-client-reports-date-chooser #date-range .ui-datepicker-row-break {
+    clear: none;
+    width: auto;
+    display:none;
+}
+#wp-client-reports-date-chooser #date-range .ui-widget-header,
+#wp-client-reports-date-chooser #date-range .ui-state-default {
+    border: 0px;
+    font-weight: normal;
+    background-color: transparent;
+    background-image: none;
+}
+#wp-client-reports-date-chooser #date-range .ui-widget-header {
+    padding-bottom:4px;
+}
+#wp-client-reports-date-chooser #date-range .ui-state-default {
+    text-align:center;
+}
 #wp-client-reports-date-chooser #date-range .ui-datepicker-group {
 	float:left;
 	width:50%;
@@ -146,7 +168,7 @@
 }
 #wp-client-reports-date-chooser #date-range .ui-datepicker-calendar td .ui-state-default {
 	width:100%;
-	border-radius: 4px;
+	border-radius: 0px;
 	padding:2px;
 	display: block;
 }
@@ -182,12 +204,14 @@
     bottom:20px;
     left:4px;
     cursor: pointer;
+    text-decoration: underline;
 }
 #wp-client-reports-date-chooser .ui-datepicker-next {
     position: absolute;
     bottom:20px;
     right:20px;
     cursor: pointer;
+    text-decoration: underline;
 }
 #wp-client-reports-date-chooser .ui-datepicker-prev.ui-state-disabled, 
 #wp-client-reports-date-chooser .ui-datepicker-next.ui-state-disabled {
