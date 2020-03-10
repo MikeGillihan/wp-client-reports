@@ -696,9 +696,9 @@ function wp_client_reports_get_content_stats_data($start_date, $end_date) {
     $comments_count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $comments_table_name WHERE `comment_approved` = 1 AND `comment_type` = '' AND `comment_date_gmt` >= %s AND `comment_date_gmt` <= %s", array($start_date . ' 00:00:00', $end_date . ' 23:59:59') ) );
 
     $data = new \stdClass;
-    $data->posts_count = $posts_count;
-    $data->pages_count = $pages_count;
-    $data->comments_count = $comments_count;
+    $data->posts_count = intval($posts_count);
+    $data->pages_count = intval($pages_count);
+    $data->comments_count = intval($comments_count);
 
     $data = apply_filters( 'wp_client_reports_content_stats_data', $data, $start_date, $end_date );
 
