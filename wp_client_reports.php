@@ -100,6 +100,8 @@ function wp_client_reports_data_install() {
     add_option( 'wp_client_reports_version', WP_CLIENT_REPORTS_VERSION );
     add_option( 'wp_client_reports_enable_updates', 'on' );
     add_option( 'wp_client_reports_enable_content_stats', 'on' );
+
+    wp_client_reports_check_for_updates();
 }
 
 
