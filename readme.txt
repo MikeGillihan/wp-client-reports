@@ -4,7 +4,7 @@ Donate link: https://switchwp.com/plugins/wp-client-reports/
 Tags:  reports, client reports, reporting, statistics, analytics, maintenance, updates, plugin updates, theme updates
 Requires at least: 5.0.0
 Tested up to: 5.3.2
-Stable tag: 1.0.8
+Stable tag: 1.0.9
 Requires PHP: 5.6.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -25,14 +25,15 @@ Send a professional looking email including update statistics whenever you compl
 
 == Pro Version ==
 
-[WP Client Reports Pro](https://switchwp.com/plugins/wp-client-reports/?utm_source=wporg&utm_medium=readme&utm_campaign=wpclientreports) allows you to self brand the maintenance report email with your logo and company color. It also adds a number of optional integrations with other services and plugins to display their statistics.
+[WP Client Reports Pro](https://switchwp.com/plugins/wp-client-reports/?utm_source=wporg&utm_medium=readme&utm_campaign=wpclientreports) allows you to self brand the maintenance report email with your logo and company color. It allows you to send reports out automatically on a weekly or monthly schedule. It also adds a number of optional integrations with other services and plugins to display their statistics.
 
 - Google Analytics
-- Gravity Forms & Ninja Forms
+- Gravity Forms, Ninja Forms, WP Forms, Fomidable Forms, Caldera Forms & Contact Form 7
 - Uptime Robot & Pingdom
-- UpdraftPlus & BackWPup
+- UpdraftPlus, BackWPup & BackupBuddy
 - Mailchimp
-- WooCommerce
+- SearchWP
+- WooCommerce & Easy Digital Downloads
 
 Have an idea that should be added? Let me know at [SwitchWP](https://switchwp.com/plugins/wp-client-reports/?utm_source=wporg&utm_medium=readme&utm_campaign=wpclientreports).
 
@@ -61,6 +62,9 @@ WordPress by default does not track when updates have happened. WP Client Report
 
 
 == Changelog ==
+
+= 1.0.9 =
+* Change the way reports are sent to allow for sending via schedules in Pro version
 
 = 1.0.8 =
 * Fix some issues with calendar when jquery-ui styles are enqued by another plugin
