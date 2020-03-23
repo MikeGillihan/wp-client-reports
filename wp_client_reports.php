@@ -109,25 +109,28 @@ function wp_client_reports_data_install() {
 /**
  * Load actions if options are enabled
  */
-add_action( 'admin_init', 'wp_client_reports_load_actions', 985 );
+add_action( 'init', 'wp_client_reports_load_actions', 985 );
 function wp_client_reports_load_actions(){
-    
-    $updates_enabled = get_option( 'wp_client_reports_enable_updates' );
-    if ($updates_enabled == 'on') {
-        add_action('wp_client_reports_stats', 'wp_client_reports_stats_page_updates', 10);
-        add_action('wp_client_reports_stats_email', 'wp_client_reports_stats_email_updates', 10, 2);
-        add_action('wp_ajax_wp_client_reports_updates_data', 'wp_client_reports_updates_data');
-    }
 
-    $content_stats_enabled = get_option( 'wp_client_reports_enable_content_stats' );
-    if ($content_stats_enabled == 'on') {
-        add_action('wp_client_reports_stats', 'wp_client_reports_stats_page_content', 30);
-        add_action('wp_client_reports_stats_email', 'wp_client_reports_stats_email_content', 30, 2);
-        add_action('wp_ajax_wp_client_reports_content_stats_data', 'wp_client_reports_content_stats_data');
+    if (is_admin() || wp_doing_cron()) {
+    
+        $updates_enabled = get_option( 'wp_client_reports_enable_updates' );
+        if ($updates_enabled == 'on') {
+            add_action('wp_client_reports_stats', 'wp_client_reports_stats_page_updates', 10);
+            add_action('wp_client_reports_stats_email', 'wp_client_reports_stats_email_updates', 10, 2);
+            add_action('wp_ajax_wp_client_reports_updates_data', 'wp_client_reports_updates_data');
+        }
+
+        $content_stats_enabled = get_option( 'wp_client_reports_enable_content_stats' );
+        if ($content_stats_enabled == 'on') {
+            add_action('wp_client_reports_stats', 'wp_client_reports_stats_page_content', 30);
+            add_action('wp_client_reports_stats_email', 'wp_client_reports_stats_email_content', 30, 2);
+            add_action('wp_ajax_wp_client_reports_content_stats_data', 'wp_client_reports_content_stats_data');
+        }
+
     }
 
 }
-
 
 
 /**
