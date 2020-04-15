@@ -489,7 +489,7 @@ function wp_client_reports_stats_page() {
 function wp_client_reports_stats_page_updates() {
     ?>
     <div class="metabox-holder">
-        <div class="postbox wp-client-reports-postbox" id="wp-client-reports-updates">
+        <div class="postbox wp-client-reports-postbox loading" id="wp-client-reports-updates">
             <button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text"><?php _e('Toggle panel','wp-client-reports'); ?>: <?php _e('Software Updates','wp-client-reports'); ?></span><span class="toggle-indicator" aria-hidden="true"></span></button><h2 class="hndle ui-sortable-handle"><span><?php _e('Software Updates','wp-client-reports'); ?></span></h2>
             <div class="inside">
                 <div class="main">
@@ -729,7 +729,7 @@ function wp_client_reports_email_content_stats_data($data, $start_date, $end_dat
 function wp_client_reports_stats_page_content() {
     ?>
         <div class="metabox-holder">
-            <div class="postbox wp-client-reports-postbox" id="wp-client-reports-content-stats">
+            <div class="postbox wp-client-reports-postbox loading" id="wp-client-reports-content-stats">
                 <button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text"><?php _e('Toggle panel','wp-client-reports'); ?>: <?php _e('Site Content','wp-client-reports'); ?></span><span class="toggle-indicator" aria-hidden="true"></span></button><h2 class="hndle ui-sortable-handle"><span><?php _e('Site Content','wp-client-reports'); ?></span></h2>
                 <div class="inside">
                     <div class="main">

@@ -26,6 +26,13 @@
 .wp-client-reports-postbox {
     margin:10px 0px;
 }
+.wp-client-reports-postbox.loading .inside {
+    background:url('/wp-admin/images/spinner-2x.gif') center center no-repeat;
+    background-size:20px 20px;
+}
+.wp-client-reports-postbox.loading .main {
+    opacity:0;
+}
 .wp-client-reports-big-numbers {
     text-align:center;
 }

@@ -144,7 +144,24 @@
             }
         });
 
+        var originalReportTitle = $("#wp-client-reports-send-email-report #report-title").val();
+        var originalReportIntro = $("#wp-client-reports-send-email-report #report-intro").val();
+
         $("#wp-client-reports-email-report").click(function(e) {
+            var js_date_format = getDateFormat();
+            var month = moment($("#wp-client-reports-end-date").text()).format('MMMM');
+            var year = moment($("#wp-client-reports-end-date").text()).format('YYYY');
+            var date = moment($("#wp-client-reports-end-date").text()).format(js_date_format);
+            var newReportTitle = originalReportTitle;
+            var newReportIntro = originalReportIntro;
+            newReportTitle = newReportTitle.replace("[YEAR]", year);
+            newReportTitle = newReportTitle.replace("[MONTH]", month);
+            newReportTitle = newReportTitle.replace("[DATE]", date);
+            newReportIntro = newReportIntro.replace("[YEAR]", year);
+            newReportIntro = newReportIntro.replace("[MONTH]", month);
+            newReportIntro = newReportIntro.replace("[DATE]", date);
+            $("#wp-client-reports-send-email-report #report-title").val(newReportTitle);
+            $("#wp-client-reports-send-email-report #report-intro").val(newReportIntro);
             $("#wp-client-reports-report-status").hide();
             $("#wp-client-reports-send-email-report").show();
         });
@@ -202,6 +219,7 @@
 
     $(document).on('wp_client_reports_js_get_data', function(event, start_date_utc, end_date_utc){
         if ($('#wp-client-reports-updates').length) {
+            $('#wp-client-reports-updates').addClass('loading');
             var dataString = 'action=wp_client_reports_updates_data&start=' + start_date_utc + '&end=' + end_date_utc;
             var js_date_format = getDateFormat();
             $.ajax({
@@ -237,6 +255,7 @@
                     if (data.total_themes_updated === 0) {
                         $("#wp-client-reports-theme-updates-list").append('<li class="wp-client-reports-empty">No Theme Updates</li>');
                     }
+                    $('#wp-client-reports-updates').removeClass('loading');
                 }
             });
         }
@@ -244,6 +263,7 @@
 
     $(document).on('wp_client_reports_js_get_data', function(event, start_date_utc, end_date_utc){
         if ($('#wp-client-reports-content-stats').length) {
+            $('#wp-client-reports-content-stats').addClass('loading');
             var dataString = 'action=wp_client_reports_content_stats_data&start=' + start_date_utc + '&end=' + end_date_utc;
             var js_date_format = getDateFormat();
             $.ajax({
@@ -255,6 +275,7 @@
                     $("#wp-client-reports-new-posts-count").text(data.posts_count);
                     $("#wp-client-reports-new-pages-count").text(data.pages_count);
                     $("#wp-client-reports-new-comments-count").text(data.comments_count);
+                    $('#wp-client-reports-content-stats').removeClass('loading');
                 }
             });
         }
