@@ -143,15 +143,12 @@ register_activation_hook( __FILE__, 'wp_client_reports_check_for_updates_daily_s
 function wp_client_reports_check_for_updates_daily_schedule(){
     //Use wp_next_scheduled to check if the event is already scheduled
     $timestamp = wp_next_scheduled( 'wp_client_reports_check_for_updates_daily' );
-
     //If $timestamp == false schedule daily backups since it hasn't been done previously
     if( $timestamp == false ){
-        $timezone_string = get_option('timezone_string');
-        if ($timezone_string) {
-            date_default_timezone_set(get_option('timezone_string'));
-        }
-        //Schedule the event for right now, then to repeat daily using the hook 'wp_client_reports_check_for_updates_daily'
-        wp_schedule_event( strtotime('00:00:00'), 'daily', 'wp_client_reports_check_for_updates_daily' );
+        $timezone = wp_timezone();
+        $midnight = new DateTime("00:00:00", $timezone);
+        //Schedule the event for right now, then to repeat daily
+        wp_schedule_event( $midnight->format('U'), 'daily', 'wp_client_reports_check_for_updates_daily' );
     }
 }
 
@@ -184,17 +181,14 @@ function wp_client_reports_check_for_updates() {
 
     global $wpdb;
     $wp_client_reports_table_name = $wpdb->prefix . 'update_tracking';
-
-    $timezone_string = get_option('timezone_string');
-    if ($timezone_string) {
-        date_default_timezone_set(get_option('timezone_string'));
-    }
     
     if ( ! function_exists( 'get_plugins' ) ) {
         require_once ABSPATH . 'wp-admin/includes/plugin.php';
     }
 
-    $mysqldate = date('Y-m-d');
+    $timezone = wp_timezone();
+    $now = new DateTime("now", $timezone);
+    $mysqldate = $now->format('Y-m-d');
 
     $wordpress_version = get_bloginfo( 'version' );
 
@@ -366,12 +360,13 @@ function wp_client_reports_add_dashboard_widget() {
  * Create the function to output the contents of our Dashboard Widget.
  */
 function wp_client_reports_last30_widget_function() {
-    $timezone_string = get_option('timezone_string');
-    if ($timezone_string) {
-        date_default_timezone_set(get_option('timezone_string'));
-    }
-    $start_date = date('Y-m-d', strtotime('-30 days'));
-    $end_date = date('Y-m-d');
+
+    $timezone = wp_timezone();
+    $start_date_object = new DateTime('-30 days', $timezone);
+    $start_date = $start_date_object->format('Y-m-d');
+    $end_date_object = new DateTime("now", $timezone);
+    $end_date = $end_date_object->format('Y-m-d');
+    
     $updates_data = wp_client_reports_get_updates_data($start_date, $end_date);
     ?>
     <div class="wp-client-reports-big-numbers wp-client-reports-postbox wp-client-reports-last30-widget">
@@ -574,14 +569,11 @@ function wp_client_reports_updates_data() {
  */
 function wp_client_reports_validate_dates($start, $end) {
     $dates = new \stdClass;
-    $timezone_string = get_option('timezone_string');
-    if ($timezone_string) {
-        date_default_timezone_set($timezone_string);
-    }
+    $timezone = wp_timezone();
     if (isset($start) && isset($end)) {
-        $start_date_object = date_create_from_format('Y-m-d', $start);
+        $start_date_object = DateTime::createFromFormat('Y-m-d', $start, $timezone);
         $dates->start_date = $start_date_object->format('Y-m-d');
-        $end_date_object = date_create_from_format('Y-m-d', $end);
+        $end_date_object = DateTime::createFromFormat('Y-m-d', $end, $timezone);
         $dates->end_date = $end_date_object->format('Y-m-d');
     } else {
         $dates->start_date = date('Y-m-d', strtotime('-30 days'));
