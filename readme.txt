@@ -64,11 +64,11 @@ WordPress by default does not track when updates have happened. WP Client Report
 == Changelog ==
 
 = 1.0.10 =
-* Add ability to use [YEAR], [MONTH], and [DATE] shortcodes in email title and description.
-* Add loading spinners while reports are loading
+* New Feature: Ability to use [YEAR], [MONTH], and [DATE] shortcodes in email title and description.
+* New Feature: Loading spinners while reports are loading
+* New Feature: New fields for email: Send From Email, Send From Name, and Footer
 * Fix issues with timezones using UTC offsets
 * Fix issues with HTML in email titles and descriptions
-* Add new fields for email: Send From Email, Send From Name, and Footer
 * Fix some untranslatable strings
 * Fix some issues with settings screen when Easy Digital Downloads is installed
 
