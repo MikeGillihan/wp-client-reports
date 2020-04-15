@@ -29,13 +29,16 @@ function wp_client_reports_scripts() {
     if($screen && ($screen->id == 'dashboard_page_wp_client_reports' || $screen->id == 'settings_page_wp_client_reports')) {
 
         wp_enqueue_script( 'jquery-ui-datepicker' );
-        wp_enqueue_script( 'moment-js', plugin_dir_url( __FILE__ ) . '/js/moment.js', array(), '2.24.0', true );
+        wp_enqueue_script( 'moment-js', plugin_dir_url( __FILE__ ) . 'js/moment.js', array(), '2.24.0', true );
         wp_enqueue_script('thickbox');
         wp_enqueue_style( 'thickbox' );
-        wp_register_script( 'wp-client-reports-js', plugin_dir_url( __FILE__ ) . '/js/wp-client-reports.js', array('jquery','jquery-ui-datepicker'), WP_CLIENT_REPORTS_VERSION, true );
+        wp_register_script( 'wp-client-reports-js', plugin_dir_url( __FILE__ ) . 'js/wp-client-reports.js', array('jquery','jquery-ui-datepicker'), WP_CLIENT_REPORTS_VERSION, true );
         $date_format = get_option('date_format');
         $js_data = array(
             'moment_date_format' => wp_client_reports_convert_date_format($date_format),
+            'nowpupdates' => __('No WordPress Core Updates','wp-client-reports'),
+            'nopluginupdates' => __('No Plugin Updates','wp-client-reports'),
+            'nothemeupdates' => __('No Theme Updates','wp-client-reports')
         );
         wp_localize_script( 'wp-client-reports-js', 'wp_client_reports_data', $js_data );
         wp_enqueue_script( 'wp-client-reports-js' );
@@ -52,8 +55,8 @@ add_action( 'admin_print_scripts', 'wp_client_reports_scripts' );
 add_filter( 'plugin_action_links', 'wp_client_reports_plugin_page_links1', 10, 2 );
 function wp_client_reports_plugin_page_links1( $links_array, $plugin_file_name ){
 	if( strpos( $plugin_file_name, basename(__FILE__) ) ) {
-        array_unshift( $links_array, '<a href="' . admin_url( 'index.php?page=wp_client_reports' ) . '">Reports</a>' );
-		array_unshift( $links_array, '<a href="' . admin_url( 'options-general.php?page=wp_client_reports' ) . '">Settings</a>' );
+        array_unshift( $links_array, '<a href="' . admin_url( 'index.php?page=wp_client_reports' ) . '">' . __('Reports','wp-client-reports') . '</a>' );
+		array_unshift( $links_array, '<a href="' . admin_url( 'options-general.php?page=wp_client_reports' ) . '">' . __('Settings','wp-client-reports') . '</a>' );
 	}
 	return $links_array;
 }
@@ -65,7 +68,7 @@ function wp_client_reports_plugin_page_links1( $links_array, $plugin_file_name )
 add_filter( 'plugin_row_meta', 'wp_client_reports_plugin_page_links2', 10, 4 );
 function wp_client_reports_plugin_page_links2( $links_array, $plugin_file_name, $plugin_data, $status ) {
     if ( strpos( $plugin_file_name, basename(__FILE__) ) ) {
-        $links_array[] = '<a href="https://switchwp.com/docs/product/wp-client-reports/?utm_source=wordpress&utm_medium=pluginscreen&utm_campaign=wpclientreports" target="_blank">Docs</a>';
+        $links_array[] = '<a href="https://switchwp.com/docs/product/wp-client-reports/?utm_source=wordpress&utm_medium=pluginscreen&utm_campaign=wpclientreports" target="_blank">' . __('Docs','wp-client-reports') . '</a>';
     }
     return $links_array;
 }
@@ -394,8 +397,8 @@ function wp_client_reports_last30_widget_function() {
  */
 add_action( 'admin_menu', 'wp_client_reports_add_admin_menu' );
 function wp_client_reports_add_admin_menu(  ) {
-    add_options_page( 'WP Client Reports Settings', 'WP Client Reports', 'manage_options', 'wp_client_reports', 'wp_client_reports_options_page' );
-    add_submenu_page( 'index.php', 'Reports', 'Reports', 'manage_options', 'wp_client_reports', 'wp_client_reports_stats_page');
+    add_options_page( __('WP Client Reports Settings','wp-client-reports'), __('WP Client Reports','wp-client-reports'), 'manage_options', 'wp_client_reports', 'wp_client_reports_options_page' );
+    add_submenu_page( 'index.php', __('Reports','wp-client-reports'), __('Reports','wp-client-reports'), 'manage_options', 'wp_client_reports', 'wp_client_reports_stats_page');
 }
 
 
@@ -471,7 +474,7 @@ function wp_client_reports_stats_page() {
                     <input type="hidden" name="action" value="wp_client_reports_send_email_report">
                     <input type="hidden" name="start" class="from_value" id="start_date_email">
                     <input type="hidden" name="end" class="to_value" id="end_date_email">
-                    <p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Send Now"><img src="<?php echo admin_url(); ?>images/spinner-2x.gif" id="send-report-spinner" style="display:none;"></p>
+                    <p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="<?php _e('Send Now','wp-client-reports'); ?>"><img src="<?php echo admin_url(); ?>images/spinner-2x.gif" id="send-report-spinner" style="display:none;"></p>
                 </form>
                 <div class="notice wp-client-reports-success" id="wp-client-reports-report-status" style="display:none;margin-top:26px;">
                     <p></p>
@@ -1024,7 +1027,7 @@ function wp_client_reports_stats_email_updates($start_date, $end_date) {
                     endif;
                 endforeach;
             else:
-                echo '<tr><td style="width:40%;padding:8px 0px 8px 0px;border-bottom:solid 1px #dddddd;">No WordPress Core Updates</td>';
+                echo '<tr><td style="padding:8px 0px 8px 0px;border-bottom:solid 1px #dddddd;">' . __('No WordPress Core Updates','wp-client-reports') . '</td>';
             endif;
             ?>
             </table>
@@ -1039,7 +1042,7 @@ function wp_client_reports_stats_email_updates($start_date, $end_date) {
                     endif;
                 endforeach;
             else:
-                echo '<tr><td style="width:40%;padding:8px 0px 8px 0px;border-bottom:solid 1px #dddddd;">No Plugin Updates</td>';
+                echo '<tr><td style="padding:8px 0px 8px 0px;border-bottom:solid 1px #dddddd;">' . __('No Plugin Updates','wp-client-reports') . '</td>';
             endif;
             ?>
             </table>
@@ -1054,7 +1057,7 @@ function wp_client_reports_stats_email_updates($start_date, $end_date) {
                     endif;
                 endforeach;
             else:
-                echo '<tr><td style="width:40%;padding:8px 0px 8px 0px;border-bottom:solid 1px #dddddd;">No Theme Updates</td>';
+                echo '<tr><td style="padding:8px 0px 8px 0px;border-bottom:solid 1px #dddddd;">' . __('No Theme Updates','wp-client-reports') . '</td>';
             endif;
             ?>
             </table>
@@ -1247,8 +1250,7 @@ function wp_client_reports_options_page(  ) {
 	?>
     <div class="wrap" id="wp-client-reports-options">
         <h1 class="wp-heading-inline"><?php _e('WP Client Reports Settings','wp-client-reports'); ?></h1>
-        <a href="<?php echo admin_url( 'index.php?page=wp_client_reports' ); ?>" class="page-title-action">View Reports</a>
-        <h2 class="screen-reader-text">Filter posts list</h2>
+        <a href="<?php echo admin_url( 'index.php?page=wp_client_reports' ); ?>" class="page-title-action"><?php _e('View Reports'); ?></a>
         <form action='options.php' method='post' enctype="multipart/form-data">
             <div id="poststuff">
                 <div id="post-body" class="metabox-holder columns-2">
@@ -1258,7 +1260,7 @@ function wp_client_reports_options_page(  ) {
                             <div class="inside">
                                 <div id="major-publishing-actions">
                                     <div id="publishing-action">
-                                        <?php submit_button('Save Settings'); ?>
+                                        <?php submit_button(__('Save Settings','wp-client-reports')); ?>
                                     </div><!-- #publishing-action -->
                                     <div class="clear"></div>
                                 </div><!-- #major-publishing-actions -->
