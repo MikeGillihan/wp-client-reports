@@ -774,7 +774,7 @@ function wp_client_reports_send_email_report_from_ajax() {
         $report_email = sanitize_email($_POST['report_email']);
     }
 
-    $report_intro = stripslashes(sanitize_textarea_field($_POST['report_intro']));
+    $report_intro = $_POST['report_intro'];
 
     $start = sanitize_text_field($_POST['start']);
     $end = sanitize_text_field($_POST['end']);
@@ -798,23 +798,31 @@ function wp_client_reports_send_email_report_from_ajax() {
 function wp_client_reports_send_email_report($start, $end, $report_title = null, $report_intro = null, $report_email = null) {
 
     if (!$report_title) {
-        $report_title = get_option( 'wp_client_reports_default_title', null );
+        $report_title = sanitize_text_field(get_option( 'wp_client_reports_default_title', null ));
         if (!$report_title) {
             $report_title = get_bloginfo('name') . ' ' . __('Site Report','wp-client-reports');
         }
     }
 
+    if ($report_title) {
+        $report_title = stripslashes($report_title);
+    }
+
+    $allowed_html = ['strong' => [], 'em' => [], 'b' => [], 'i' => [], 'a' => ['href' => [] ] ];
+
     if (!$report_intro) {
         $report_intro = get_option( 'wp_client_reports_default_intro', null );
     }
+
     if ($report_intro) {
         $report_intro = wpautop($report_intro);
+        $report_intro = stripslashes(wp_kses($report_intro, $allowed_html));
     }
     
     if (!$report_email) {
         $report_email = get_option( 'wp_client_reports_default_email', null );
         if (!$report_email) {
-            $report_email = get_bloginfo('admin_email');
+            $report_email = sanitize_email(get_bloginfo('admin_email'));
         }
     }
 
@@ -822,29 +830,39 @@ function wp_client_reports_send_email_report($start, $end, $report_title = null,
 
     $date_format = get_option('date_format');
 
-    $timezone_string = get_option('timezone_string');
-    if ($timezone_string) {
-        date_default_timezone_set($timezone_string);
+    $timezone = wp_timezone();
+
+    $start_date_object = DateTime::createFromFormat('Y-m-d', $dates->start_date, $timezone);
+    $end_date_object = DateTime::createFromFormat('Y-m-d', $dates->end_date, $timezone);
+    $now = new DateTime("now", $timezone);
+
+    if ($report_title) {
+        $report_title = str_replace("[MONTH]", $end_date_object->format('F'), $report_title);
+        $report_title = str_replace("[YEAR]", $end_date_object->format('Y'), $report_title);
+        $report_title = str_replace("[DATE]", $end_date_object->format($date_format), $report_title);
     }
 
-    $start_date_object = date_create_from_format('Y-m-d', $dates->start_date);
-    $end_date_object = date_create_from_format('Y-m-d', $dates->end_date);
+    if ($report_intro) {
+        $report_intro = str_replace("[MONTH]", $end_date_object->format('F'), $report_intro);
+        $report_intro = str_replace("[YEAR]", $end_date_object->format('Y'), $report_intro);
+        $report_intro = str_replace("[DATE]", $end_date_object->format($date_format), $report_intro);
+    }
 
     $start_day = $start_date_object->format('j');
     $start_month = $start_date_object->format('n');
     $end_day = $end_date_object->format('j');
     $end_month = $end_date_object->format('n');
-    $lastdayofmonth = date('t');
+    $lastdayofmonth = $now->format('t');
     
     if ($start_month == $end_month && $start_day == 1 && $end_day == $lastdayofmonth) {
         $date_formatted = $start_date_object->format('F Y');
     } else {
         $start_date_formatted = $start_date_object->format($date_format);
         $end_date_formatted = $end_date_object->format($date_format);
-        $date_formatted = __('From','wp-client-reports') . ' ' . esc_html($start_date_formatted) . ' - ' . $end_date_formatted;
+        $date_formatted = sprintf( __( 'From %s - %s', 'wp-client-reports' ), esc_html($start_date_formatted), esc_html($end_date_formatted) );
     }
 
-    $allowed_html = ['br' => [], 'p' => [], 'strong' => [], 'em' => [], 'a' => ['href' => [] ] ];
+    
 
     $brand_color = wp_client_reports_get_brand_color();
 
@@ -868,8 +886,8 @@ function wp_client_reports_send_email_report($start, $end, $report_title = null,
         <?php if($report_intro) : ?>
             <!-- start copy -->
             <tr>
-            <td bgcolor="#ffffff" align="left" style="padding: 10px 40px 20px 40px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
-                <p style="margin: 0; color:#212529;"><?php echo wp_kses($report_intro, $allowed_html); ?></p>
+            <td bgcolor="#ffffff" align="left" style="padding: 0px 40px 20px 40px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
+                <p style="margin: 0; color:#212529;"><?php echo $report_intro; ?></p>
             </td>
             </tr>
             <!-- end copy -->
@@ -904,10 +922,19 @@ function wp_client_reports_send_email_report($start, $end, $report_title = null,
     include("email/report-email-footer.php");
     
     $body = ob_get_clean();
+
+    $email_from = get_option( 'wp_client_reports_email_from' );
+    if (!$email_from) {
+        $email_from = get_bloginfo('admin_email');
+    }
+    $name_from = get_option( 'wp_client_reports_name_from' );
+    if (!$name_from) {
+        $name_from = get_bloginfo('name');
+    }
         
     $subject = $report_title;
     $headers[] = 'Content-Type: text/html; charset=UTF-8';
-    $headers[] = 'From: ' . get_bloginfo('name') . ' <' . get_bloginfo('admin_email') . '>';
+    $headers[] = 'From: ' . $name_from . ' <' . $email_from . '>';
     
     $sent = wp_mail( $report_email, $subject, $body, $headers );
 
@@ -1091,8 +1118,11 @@ add_action( 'admin_init', 'wp_client_reports_options_init', 10 );
 function wp_client_reports_options_init(  ) {
 
     register_setting( 'wp_client_reports_options_page', 'wp_client_reports_default_title' );
-	register_setting( 'wp_client_reports_options_page', 'wp_client_reports_default_email' );
+    register_setting( 'wp_client_reports_options_page', 'wp_client_reports_default_email' );
+    register_setting( 'wp_client_reports_options_page', 'wp_client_reports_email_from' );
+    register_setting( 'wp_client_reports_options_page', 'wp_client_reports_name_from' );
     register_setting( 'wp_client_reports_options_page', 'wp_client_reports_default_intro' );
+    register_setting( 'wp_client_reports_options_page', 'wp_client_reports_email_footer' );
     register_setting( 'wp_client_reports_options_page', 'wp_client_reports_enable_updates' );
     register_setting( 'wp_client_reports_options_page', 'wp_client_reports_enable_content_stats' );
 
@@ -1113,16 +1143,40 @@ function wp_client_reports_options_init(  ) {
 
 	add_settings_field(
 		'wp_client_reports_default_email',
-		__( 'Default Email Address(es) to Send to', 'wp-client-reports' ),
+		__( 'Default Email Address(es) to Send To', 'wp-client-reports' ),
 		'wp_client_reports_default_email_render',
 		'wp_client_reports_options_page',
 		'wp_client_reports_email_section'
-	);
+    );
+    
+    add_settings_field(
+		'wp_client_reports_email_from',
+		__( 'Email Address to Send From', 'wp-client-reports' ),
+		'wp_client_reports_email_from_render',
+		'wp_client_reports_options_page',
+		'wp_client_reports_email_section'
+    );
+
+    add_settings_field(
+		'wp_client_reports_name_from',
+		__( 'Name to Send From', 'wp-client-reports' ),
+		'wp_client_reports_name_from_render',
+		'wp_client_reports_options_page',
+		'wp_client_reports_email_section'
+    );
 
 	add_settings_field(
 		'wp_client_reports_default_intro',
 		__( 'Default Email Introduction (optional)', 'wp-client-reports' ),
 		'wp_client_reports_default_intro_render',
+		'wp_client_reports_options_page',
+		'wp_client_reports_email_section'
+    );
+
+    add_settings_field(
+		'wp_client_reports_email_footer',
+		__( 'Email Footer', 'wp-client-reports' ),
+		'wp_client_reports_email_footer_render',
 		'wp_client_reports_options_page',
 		'wp_client_reports_email_section'
     );
@@ -1170,6 +1224,7 @@ function wp_client_reports_default_title_render(  ) {
     }
 	?>
 	<input type='text' name='wp_client_reports_default_title' value='<?php echo esc_attr($option); ?>'class="regular-text">
+    <p class="description"><?php _e('You can use [YEAR], [MONTH], and [DATE] shortcodes for automatic replacement.'); ?></p>
 	<?php
 }
 
@@ -1190,12 +1245,56 @@ function wp_client_reports_default_email_render(  ) {
 
 
 /**
+ * Add default email field to the options page
+ */
+function wp_client_reports_email_from_render(  ) {
+    $option = get_option( 'wp_client_reports_email_from' );
+    if (!$option) {
+        $option = get_bloginfo('admin_email');
+    }
+	?>
+	<input type='text' name='wp_client_reports_email_from' value='<?php echo esc_attr($option); ?>'class="regular-text">
+    <p class="description"><?php _e('Some SMTP and other email plugins will not obey this setting.'); ?></p>
+	<?php
+}
+
+
+/**
+ * Add default email field to the options page
+ */
+function wp_client_reports_name_from_render(  ) {
+    $option = get_option( 'wp_client_reports_name_from' );
+    if (!$option) {
+        $option = get_bloginfo('name');
+    }
+	?>
+	<input type='text' name='wp_client_reports_name_from' value='<?php echo esc_attr($option); ?>'class="regular-text">
+	<?php
+}
+
+
+/**
  * Add default intro field to the options page
  */
 function wp_client_reports_default_intro_render(  ) {
 	$option = get_option( 'wp_client_reports_default_intro' );
 	?>
-	<textarea name='wp_client_reports_default_intro' class="large-text" rows="8" cols="50"><?php echo esc_textarea($option); ?></textarea>
+	<textarea name='wp_client_reports_default_intro' class="large-text" rows="6" cols="50"><?php echo esc_textarea($option); ?></textarea>
+    <p class="description"><?php _e('You can use [YEAR], [MONTH], and [DATE] shortcodes for automatic replacement.'); ?></p>
+	<?php
+}
+
+
+/**
+ * Add email footer field to the options page
+ */
+function wp_client_reports_email_footer_render(  ) {
+    $option = get_option( 'wp_client_reports_email_footer' );
+    if (!$option) {
+        $option = sprintf( __( 'This email was sent by an administrator at %s.', 'wp-client-reports' ), '<a href="' . site_url() . '">' . get_bloginfo('name') . '</a>' );
+    }
+	?>
+	<textarea name='wp_client_reports_email_footer' class="large-text" rows="3" cols="50"><?php echo esc_textarea($option); ?></textarea>
 	<?php
 }
 

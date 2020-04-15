@@ -27,7 +27,18 @@
                     </p>
                 <?php endif; ?>
                 <p style="margin: 0 0 10px;">
-                    <?php printf( __( 'This email was sent by an administrator at %s.', 'wp-client-reports' ), '<a href="' . site_url() . '">' . get_bloginfo('name') . '</a>' ); ?>
+                    <?php
+                        $email_footer = get_option( 'wp_client_reports_email_footer', null );
+                        if (!$email_footer) {
+                            $email_footer = sprintf( __( 'This email was sent by an administrator at %s.', 'wp-client-reports' ), '<a href="' . site_url() . '">' . get_bloginfo('name') . '</a>' );
+                        }
+                        $allowed_html = ['strong' => [], 'em' => [], 'b' => [], 'i' => [], 'a' => ['href' => [] ] ];
+                        if ($email_footer) {
+                            $email_footer = wpautop($email_footer);
+                            $email_footer = stripslashes(wp_kses($email_footer, $allowed_html));
+                        }
+                    ?>
+                    <?php echo $email_footer; ?>
                 </p>
             </td>
           </tr>

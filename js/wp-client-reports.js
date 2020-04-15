@@ -247,13 +247,13 @@
                         }
                     });
                     if (data.wp_updated === 0) {
-                        $("#wp-client-reports-wp-updates-list").append('<li class="wp-client-reports-empty">No WordPress Core Updates</li>');
+                        $("#wp-client-reports-wp-updates-list").append('<li class="wp-client-reports-empty">' + wp_client_reports_data.nowpupdates + '</li>');
                     }
                     if (data.total_plugins_updated === 0) {
-                        $("#wp-client-reports-plugin-updates-list").append('<li class="wp-client-reports-empty">No Plugin Updates</li>');
+                        $("#wp-client-reports-plugin-updates-list").append('<li class="wp-client-reports-empty">' + wp_client_reports_data.nopluginupdates + '</li>');
                     }
                     if (data.total_themes_updated === 0) {
-                        $("#wp-client-reports-theme-updates-list").append('<li class="wp-client-reports-empty">No Theme Updates</li>');
+                        $("#wp-client-reports-theme-updates-list").append('<li class="wp-client-reports-empty">' + wp_client_reports_data.nothemeupdates + '</li>');
                     }
                     $('#wp-client-reports-updates').removeClass('loading');
                 }
