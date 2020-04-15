@@ -232,8 +232,17 @@
     border-radius: 0px;
 }
 
+.dashboard_page_wp_client_reports #TB_window {
+    height: 405px !important;
+    width:630px !important;
+}
 .dashboard_page_wp_client_reports #TB_ajaxContent {
-    height: 325px !important;
+    height: 355px !important;
+    width:600px !important;
+}
+.dashboard_page_wp_client_reports #TB_ajaxContent p.submit {
+    margin-bottom:0px;
+    padding-bottom:0px;
 }
 
 #send-report-spinner {
