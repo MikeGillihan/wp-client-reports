@@ -4,7 +4,7 @@ Donate link: https://switchwp.com/plugins/wp-client-reports/
 Tags:  reports, client reports, reporting, statistics, analytics, maintenance, updates, plugin updates, theme updates
 Requires at least: 5.0.0
 Tested up to: 5.3.2
-Stable tag: 1.0.9
+Stable tag: 1.0.10
 Requires PHP: 5.6.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -30,7 +30,7 @@ Send a professional looking email including update statistics whenever you compl
 - Google Analytics
 - Gravity Forms, Ninja Forms, WP Forms, Fomidable Forms, Caldera Forms & Contact Form 7
 - Uptime Robot & Pingdom
-- UpdraftPlus, BackWPup & BackupBuddy
+- UpdraftPlus, BackWPup & BackupBuddy, WPEngine Backups
 - Mailchimp
 - SearchWP
 - WooCommerce & Easy Digital Downloads
@@ -62,6 +62,15 @@ WordPress by default does not track when updates have happened. WP Client Report
 
 
 == Changelog ==
+
+= 1.0.10 =
+* Add ability to use [YEAR], [MONTH], and [DATE] shortcodes in email title and description.
+* Add loading spinners while reports are loading
+* Fix issues with timezones using UTC offsets
+* Fix issues with HTML in email titles and descriptions
+* Add new fields for email: Send From Email, Send From Name, and Footer
+* Fix some untranslatable strings
+* Fix some issues with settings screen when Easy Digital Downloads is installed
 
 = 1.0.9 =
 * Change the way reports are sent to allow for sending via schedules in Pro version
