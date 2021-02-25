@@ -3,7 +3,7 @@
 Plugin Name: WP Client Reports
 Plugin URI: https://switchwp.com/wp-client-reports/
 Description: Send beautiful client maintenance reports with plugin and theme update tracking and more
-Version: 1.0.10
+Version: 1.0.11
 Author: SwitchWP
 Author URI: https://switchwp.com/
 Text Domain: wp-client-reports
@@ -14,7 +14,7 @@ if( !defined( 'ABSPATH' ) )
 	exit;
 
 
-define( 'WP_CLIENT_REPORTS_VERSION', '1.0.10' );
+define( 'WP_CLIENT_REPORTS_VERSION', '1.0.11' );
 
 
 /**
@@ -488,7 +488,9 @@ function wp_client_reports_stats_page_updates() {
     ?>
     <div class="metabox-holder">
         <div class="postbox wp-client-reports-postbox loading" id="wp-client-reports-updates">
-            <button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text"><?php _e('Toggle panel','wp-client-reports'); ?>: <?php _e('Software Updates','wp-client-reports'); ?></span><span class="toggle-indicator" aria-hidden="true"></span></button><h2 class="hndle ui-sortable-handle"><span><?php _e('Software Updates','wp-client-reports'); ?></span></h2>
+            <div class="postbox-header">
+                <h2 class="hndle"><?php _e('Software Updates','wp-client-reports'); ?></h2>
+            </div>
             <div class="inside">
                 <div class="main">
                     <div class="wp-client-reports-big-numbers">
@@ -725,7 +727,9 @@ function wp_client_reports_stats_page_content() {
     ?>
         <div class="metabox-holder">
             <div class="postbox wp-client-reports-postbox loading" id="wp-client-reports-content-stats">
-                <button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text"><?php _e('Toggle panel','wp-client-reports'); ?>: <?php _e('Site Content','wp-client-reports'); ?></span><span class="toggle-indicator" aria-hidden="true"></span></button><h2 class="hndle ui-sortable-handle"><span><?php _e('Site Content','wp-client-reports'); ?></span></h2>
+                <div class="postbox-header">
+                    <h2 class="hndle"><?php _e('Site Content','wp-client-reports'); ?></h2>
+                </div>
                 <div class="inside">
                     <div class="main">
                         <div class="wp-client-reports-big-numbers">
@@ -1397,7 +1401,9 @@ function wp_client_reports_options_page(  ) {
                         <?php foreach ( $wp_settings_sections['wp_client_reports_options_page'] as $section ) : ?>
                             <div class="postbox wp-client-reports-settings-postbox">
                                 <?php if ( $section['title'] ) : ?>
-                                    <h2 class="hndle"><span><?php echo $section['title']; ?></span></h2>
+                                    <div class="postbox-header">
+                                        <h2 class="hndle"><?php echo $section['title']; ?></h2>
+                                    </div>
                                 <?php endif; ?>
                                 <div class="inside">
                                     <table class="form-table" role="presentation">

@@ -3,8 +3,8 @@ Contributors: thejester12
 Donate link: https://switchwp.com/plugins/wp-client-reports/
 Tags:  reports, client reports, reporting, statistics, analytics, maintenance, updates, plugin updates, theme updates
 Requires at least: 5.0.0
-Tested up to: 5.3.2
-Stable tag: 1.0.10
+Tested up to: 5.6.2
+Stable tag: 1.0.11
 Requires PHP: 5.6.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -62,6 +62,9 @@ WordPress by default does not track when updates have happened. WP Client Report
 
 
 == Changelog ==
+
+= 1.0.11 =
+* Fix issues with meta box headers in newer versions of WordPress
 
 = 1.0.10 =
 * New Feature: Ability to use [YEAR], [MONTH], and [DATE] shortcodes in email title and description.
