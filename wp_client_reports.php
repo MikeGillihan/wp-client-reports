@@ -3,7 +3,7 @@
 Plugin Name: WP Client Reports
 Plugin URI: https://switchwp.com/wp-client-reports/
 Description: Send beautiful client maintenance reports with plugin and theme update tracking and more
-Version: 1.0.11
+Version: 1.0.12
 Author: SwitchWP
 Author URI: https://switchwp.com/
 Text Domain: wp-client-reports
@@ -14,7 +14,7 @@ if( !defined( 'ABSPATH' ) )
 	exit;
 
 
-define( 'WP_CLIENT_REPORTS_VERSION', '1.0.11' );
+define( 'WP_CLIENT_REPORTS_VERSION', '1.0.12' );
 
 
 /**
@@ -1367,7 +1367,7 @@ function wp_client_reports_options_page(  ) {
                                     <p>
                                         <?php _e('WP Client Reports Pro offers more branding options and additional reports such as:', 'wp-client-reports'); ?>
                                     </p>
-                                    <ul>
+                                    <ul style="list-style: disc;padding-left: 18px;">
                                         <li><?php _e('Add Logo and Brand Color to Reports'); ?></li>
                                         <li><?php _e('Google Analytics'); ?></li>
                                         <li><?php _e('Pingdom & Uptime Robot'); ?></li>

@@ -149,9 +149,9 @@
 
         $("#wp-client-reports-email-report").click(function(e) {
             var js_date_format = getDateFormat();
-            var month = moment($("#wp-client-reports-end-date").text()).format('MMMM');
-            var year = moment($("#wp-client-reports-end-date").text()).format('YYYY');
-            var date = moment($("#wp-client-reports-end-date").text()).format(js_date_format);
+            var month = moment($(".to_value").val()).format('MMMM');
+            var year = moment($(".to_value").val()).format('YYYY');
+            var date = moment($(".to_value").val()).format(js_date_format);
             var newReportTitle = originalReportTitle;
             var newReportIntro = originalReportIntro;
             newReportTitle = newReportTitle.replace("[YEAR]", year);
