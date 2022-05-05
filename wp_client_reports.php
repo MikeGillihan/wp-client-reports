@@ -1258,7 +1258,7 @@ function wp_client_reports_default_title_render(  ) {
     }
 	?>
 	<input type='text' name='wp_client_reports_default_title' value='<?php echo esc_attr($option); ?>'class="regular-text">
-    <p class="description"><?php _e('You can use [YEAR], [MONTH], and [DATE] shortcodes for automatic replacement.'); ?></p>
+    <p class="description"><?php _e('You can use [YEAR], [MONTH], and [DATE] shortcodes for automatic replacement.','wp-client-reports'); ?></p>
 	<?php
 }
 
@@ -1273,7 +1273,7 @@ function wp_client_reports_default_email_render(  ) {
     }
 	?>
 	<input type='text' name='wp_client_reports_default_email' value='<?php echo esc_attr($option); ?>'class="regular-text">
-    <p class="description"><?php _e('You can comma separate multiple addresses'); ?></p>
+    <p class="description"><?php _e('You can comma separate multiple addresses','wp-client-reports'); ?></p>
 	<?php
 }
 
@@ -1288,7 +1288,7 @@ function wp_client_reports_email_from_render(  ) {
     }
 	?>
 	<input type='text' name='wp_client_reports_email_from' value='<?php echo esc_attr($option); ?>'class="regular-text">
-    <p class="description"><?php _e('Some SMTP and other email plugins will not obey this setting.'); ?></p>
+    <p class="description"><?php _e('Some SMTP and other email plugins will not obey this setting.','wp-client-reports'); ?></p>
 	<?php
 }
 
@@ -1375,7 +1375,7 @@ function wp_client_reports_options_page(  ) {
 	?>
     <div class="wrap" id="wp-client-reports-options">
         <h1 class="wp-heading-inline"><?php _e('WP Client Reports Settings','wp-client-reports'); ?></h1>
-        <a href="<?php echo admin_url( 'index.php?page=wp_client_reports' ); ?>" class="page-title-action"><?php _e('View Reports'); ?></a>
+        <a href="<?php echo admin_url( 'index.php?page=wp_client_reports' ); ?>" class="page-title-action"><?php _e('View Reports','wp-client-reports'); ?></a>
         <form action='options.php' method='post' enctype="multipart/form-data">
             <div id="poststuff">
                 <div id="post-body" class="metabox-holder columns-2">
@@ -1398,11 +1398,11 @@ function wp_client_reports_options_page(  ) {
                                         <?php _e('WP Client Reports Pro offers more branding options and additional reports such as:', 'wp-client-reports'); ?>
                                     </p>
                                     <ul style="list-style: disc;padding-left: 18px;">
-                                        <li><?php _e('Add Logo and Brand Color to Reports'); ?></li>
-                                        <li><?php _e('Google Analytics'); ?></li>
-                                        <li><?php _e('Pingdom & Uptime Robot'); ?></li>
-                                        <li><?php _e('WooCommerce'); ?></li>
-                                        <li><?php _e('Gravity Forms & Ninja Forms'); ?></li>
+                                        <li><?php _e('Add Logo and Brand Color to Reports','wp-client-reports'); ?></li>
+                                        <li><?php _e('Google Analytics','wp-client-reports'); ?></li>
+                                        <li><?php _e('Pingdom & Uptime Robot','wp-client-reports'); ?></li>
+                                        <li><?php _e('WooCommerce','wp-client-reports'); ?></li>
+                                        <li><?php _e('Gravity Forms & Ninja Forms','wp-client-reports'); ?></li>
                                     </ul>
                                     <div><a href="https://switchwp.com/plugins/wp-client-reports/?utm_source=wordpress&utm_medium=plugin_settings&utm_campaign=wpclientreports" class="button" target='_blank'><?php _e('WP Client Reports Pro'); ?></a></div>
                                 </div>
