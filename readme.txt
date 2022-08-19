@@ -3,8 +3,8 @@ Contributors: thejester12
 Donate link: https://switchwp.com/plugins/wp-client-reports/
 Tags:  reports, client reports, reporting, statistics, analytics, maintenance, updates, plugin updates, theme updates
 Requires at least: 5.3.0
-Tested up to: 5.9.3
-Stable tag: 1.0.13
+Tested up to: 6.0.1
+Stable tag: 1.0.14
 Requires PHP: 5.6.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -63,6 +63,9 @@ WordPress by default does not track when updates have happened. WP Client Report
 
 
 == Changelog ==
+
+= 1.0.14 =
+* Ensure that jquery ui calendar next/prev month buttons are visible regardless of conflicts with other plugins
 
 = 1.0.13 =
 * Make report title a required field
