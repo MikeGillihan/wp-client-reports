@@ -484,3 +484,29 @@ input:checked + .wp-client-reports-slider:before {
     text-align: right;
     line-height: 1.6;
 }
+
+.wp-client-reports-button-link-destructive {
+    display: inline-flex;
+    font-family: inherit;
+    font-weight: 400;
+    font-size: 13px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    transition: box-shadow .1s linear;
+    align-items: center;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    outline: none;
+    text-align: left;
+    color: #cc1818;
+    text-decoration: underline;
+    transition-property: border,background,color;
+    transition-duration: .05s;
+    transition-timing-function: ease-in-out;
+    height: auto;
+}

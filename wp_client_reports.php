@@ -3,7 +3,7 @@
 Plugin Name: WP Client Reports
 Plugin URI: https://switchwp.com/wp-client-reports/
 Description: Send beautiful client maintenance reports with plugin and theme update tracking and more
-Version: 1.0.14
+Version: 1.0.15
 Author: SwitchWP
 Author URI: https://switchwp.com/
 Text Domain: wp-client-reports
@@ -14,7 +14,7 @@ if( !defined( 'ABSPATH' ) )
 	exit;
 
 
-define( 'WP_CLIENT_REPORTS_VERSION', '1.0.14' );
+define( 'WP_CLIENT_REPORTS_VERSION', '1.0.15' );
 
 
 /**
@@ -812,7 +812,7 @@ function wp_client_reports_send_email_report($start, $end, $report_title = null,
         $report_title = stripslashes($report_title);
     }
 
-    $allowed_html = ['strong' => [], 'em' => [], 'b' => [], 'i' => [], 'a' => ['href' => [] ] ];
+    $allowed_html = ['p' => [], 'br' => [], 'strong' => [], 'em' => [], 'b' => [], 'i' => [], 'a' => ['href' => [] ] ];
 
     if (!$report_intro) {
         $report_intro = get_option( 'wp_client_reports_default_intro', null );
@@ -877,29 +877,20 @@ function wp_client_reports_send_email_report($start, $end, $report_title = null,
     do_action('wp_client_reports_stats_email_before');
     
     ?>
-
-        <!-- start copy -->
         <tr>
         <td bgcolor="#ffffff" align="left" style="padding: 40px 40px 20px 40px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
             <h1 style="margin: 0 0 12px; font-size: 30px; font-weight: bold; line-height: 42px; color: <?php echo $brand_color; ?>; "><?php echo esc_html($report_title); ?></h1>
             <h5 style="font-weight:bold; font-size: 16px; line-height:18px; margin: 0px 0px 4px;"><?php echo $date_formatted; ?></h5>
         </td>
         </tr>
-        <!-- end copy -->
-
         <?php if($report_intro) : ?>
-            <!-- start copy -->
             <tr>
             <td bgcolor="#ffffff" align="left" style="padding: 0px 40px 20px 40px; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 16px; line-height: 24px;">
                 <p style="margin: 0; color:#212529;"><?php echo $report_intro; ?></p>
             </td>
             </tr>
-            <!-- end copy -->
         <?php endif; ?>
-
         <?php do_action('wp_client_reports_stats_email', $dates->start_date, $dates->end_date); ?>
-
-        <!-- start button -->
         <tr>
         <td align="left" bgcolor="#ffffff">
             <table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -917,12 +908,8 @@ function wp_client_reports_send_email_report($start, $end, $report_title = null,
             </table>
         </td>
         </tr>
-        <!-- end button -->
-    
     <?php
-
     do_action('wp_client_reports_stats_email_after');
-    
     include("email/report-email-footer.php");
     
     $body = ob_get_clean();
@@ -935,10 +922,15 @@ function wp_client_reports_send_email_report($start, $end, $report_title = null,
     if (!$name_from) {
         $name_from = get_bloginfo('name');
     }
+
+    $email_reply = get_option( 'wp_client_reports_email_reply' );
         
     $subject = $report_title;
     $headers[] = 'Content-Type: text/html; charset=UTF-8';
     $headers[] = 'From: ' . $name_from . ' <' . $email_from . '>';
+    if ($email_reply && !empty($email_reply)) {
+        $headers[] = 'Reply-To: ' . $name_from . ' <' . $email_reply . '>';
+    }
     
     $sent = wp_mail( $report_email, $subject, $body, $headers );
 
@@ -1124,6 +1116,7 @@ function wp_client_reports_options_init(  ) {
     register_setting( 'wp_client_reports_options_page', 'wp_client_reports_default_title' );
     register_setting( 'wp_client_reports_options_page', 'wp_client_reports_default_email' );
     register_setting( 'wp_client_reports_options_page', 'wp_client_reports_email_from' );
+    register_setting( 'wp_client_reports_options_page', 'wp_client_reports_email_reply' );
     register_setting( 'wp_client_reports_options_page', 'wp_client_reports_name_from' );
     register_setting( 'wp_client_reports_options_page', 'wp_client_reports_default_intro' );
     register_setting( 'wp_client_reports_options_page', 'wp_client_reports_email_footer' );
@@ -1157,6 +1150,14 @@ function wp_client_reports_options_init(  ) {
 		'wp_client_reports_email_from',
 		__( 'Email Address to Send From', 'wp-client-reports' ),
 		'wp_client_reports_email_from_render',
+		'wp_client_reports_options_page',
+		'wp_client_reports_email_section'
+    );
+
+    add_settings_field(
+		'wp_client_reports_email_reply',
+		__( 'Reply To Email Address', 'wp-client-reports' ),
+		'wp_client_reports_email_reply_render',
 		'wp_client_reports_options_page',
 		'wp_client_reports_email_section'
     );
@@ -1259,6 +1260,18 @@ function wp_client_reports_email_from_render(  ) {
 	?>
 	<input type='text' name='wp_client_reports_email_from' value='<?php echo esc_attr($option); ?>'class="regular-text">
     <p class="description"><?php _e('Some SMTP and other email plugins will not obey this setting.'); ?></p>
+	<?php
+}
+
+
+/**
+ * Add reply to email field to the options page
+ */
+function wp_client_reports_email_reply_render(  ) {
+    $option = get_option( 'wp_client_reports_email_reply' );
+	?>
+	<input type='text' name='wp_client_reports_email_reply' value='<?php echo esc_attr($option); ?>'class="regular-text">
+    <p class="description"><?php _e('Optional. Only needed if different than the "from" address above.'); ?></p>
 	<?php
 }
 
