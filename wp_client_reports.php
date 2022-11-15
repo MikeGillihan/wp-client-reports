@@ -29,7 +29,7 @@ function wp_client_reports_scripts() {
     if($screen && ($screen->id == 'dashboard_page_wp_client_reports' || $screen->id == 'settings_page_wp_client_reports')) {
 
         wp_enqueue_script( 'jquery-ui-datepicker' );
-        wp_enqueue_script( 'moment-js', plugin_dir_url( __FILE__ ) . 'js/moment.js', array(), '2.29.2', true );
+        wp_enqueue_script( 'moment-js', plugin_dir_url( __FILE__ ) . 'js/moment.js', array(), '2.29.4', true );
         wp_enqueue_script('thickbox');
         wp_enqueue_style( 'thickbox' );
         wp_register_script( 'wp-client-reports-js', plugin_dir_url( __FILE__ ) . 'js/wp-client-reports.js', array('jquery','jquery-ui-datepicker'), WP_CLIENT_REPORTS_VERSION, true );
