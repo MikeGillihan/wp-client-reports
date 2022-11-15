@@ -46,7 +46,7 @@ function wp_client_reports_scripts() {
     }
 
 }
-add_action( 'admin_print_scripts', 'wp_client_reports_scripts' );
+add_action( 'admin_enqueue_scripts', 'wp_client_reports_scripts' );
 
 
 /**
