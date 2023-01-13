@@ -87,6 +87,16 @@
             getData(startDate, endDate);
         });
 
+        $("#wp-client-reports-quick-last90").click(function(e) {
+            e.preventDefault();
+            var label = $(this).text();
+            $("#wp-client-reports-date-chooser").hide();
+            var startDate = moment().subtract(90, 'days').format("YYYY-MM-DD");
+            var endDate = moment().format("YYYY-MM-DD");
+            setDates(startDate, endDate, label);
+            getData(startDate, endDate);
+        });
+
         $("#wp-client-reports-quick-lastmonth").click(function(e) {
             e.preventDefault();
             var label = $(this).text();

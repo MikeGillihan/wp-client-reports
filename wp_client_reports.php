@@ -3,7 +3,7 @@
 Plugin Name: WP Client Reports
 Plugin URI: https://switchwp.com/wp-client-reports/
 Description: Send beautiful client maintenance reports with plugin and theme update tracking and more
-Version: 1.0.16
+Version: 1.0.17
 Author: SwitchWP
 Author URI: https://switchwp.com/
 Text Domain: wp-client-reports
@@ -14,7 +14,7 @@ if( !defined( 'ABSPATH' ) )
 	exit;
 
 
-define( 'WP_CLIENT_REPORTS_VERSION', '1.0.16' );
+define( 'WP_CLIENT_REPORTS_VERSION', '1.0.17' );
 
 
 /**
@@ -429,6 +429,7 @@ function wp_client_reports_stats_page() {
                                 <li><a href="#" id="wp-client-reports-quick-last30"><?php _e('Last 30 Days','wp-client-reports'); ?></a></li>
                                 <li><a href="#" id="wp-client-reports-quick-lastmonth"><?php _e('Last Month','wp-client-reports'); ?></a></li>
                                 <li><a href="#" id="wp-client-reports-quick-thismonth"><?php _e('This Month','wp-client-reports'); ?></a></li>
+                                <li><a href="#" id="wp-client-reports-quick-last90"><?php _e('Last 90 Days','wp-client-reports'); ?></a></li>
                             </ul>
                         </div>
                         <div id="date-range"></div>
@@ -547,6 +548,11 @@ function wp_client_reports_stats_page_updates() {
  */
 function wp_client_reports_updates_data() {
 
+    if (!current_user_can('manage_options')) {
+        echo json_encode(['status' => 'error', 'message' => __( 'You do not have administrator privilages.', 'wp-client-reports' )]);
+        wp_die();
+    }
+
     $start = null;
     $end = null;
     if (isset($_GET['start'])) {
@@ -645,6 +651,11 @@ function wp_client_reports_email_updates_data($data, $start_date, $end_date) {
 add_action('wp_ajax_wp_client_reports_force_refresh', 'wp_client_reports_force_refresh');
 function wp_client_reports_force_refresh() {
 
+    if (!current_user_can('manage_options')) {
+        echo json_encode(['status' => 'error', 'message' => __( 'You do not have administrator privilages.', 'wp-client-reports' )]);
+        wp_die();
+    }
+
     wp_client_reports_check_for_updates();
 
     do_action('wp_client_reports_force_update');
@@ -659,6 +670,11 @@ function wp_client_reports_force_refresh() {
  * Ajax call for content stats data
  */
 function wp_client_reports_content_stats_data() {
+
+    if (!current_user_can('manage_options')) {
+        echo json_encode(['status' => 'error', 'message' => __( 'You do not have administrator privilages.', 'wp-client-reports' )]);
+        wp_die();
+    }
 
     $start = null;
     $end = null;
@@ -763,6 +779,11 @@ function wp_client_reports_stats_page_content() {
  */
 add_action('wp_ajax_wp_client_reports_send_email_report', 'wp_client_reports_send_email_report_from_ajax');
 function wp_client_reports_send_email_report_from_ajax() {
+
+    if (!current_user_can('manage_options')) {
+        echo json_encode(['status' => 'error', 'message' => __( 'You do not have administrator privilages.', 'wp-client-reports' )]);
+        wp_die();
+    }
 
     $report_title = sanitize_text_field($_POST['report_title']);
 
