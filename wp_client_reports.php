@@ -3,7 +3,7 @@
 Plugin Name: WP Client Reports
 Plugin URI: https://switchwp.com/wp-client-reports/
 Description: Send beautiful client maintenance reports with plugin and theme update tracking and more
-Version: 1.0.17
+Version: 1.0.18
 Author: SwitchWP
 Author URI: https://switchwp.com/
 Text Domain: wp-client-reports
@@ -14,7 +14,7 @@ if( !defined( 'ABSPATH' ) )
 	exit;
 
 
-define( 'WP_CLIENT_REPORTS_VERSION', '1.0.17' );
+define( 'WP_CLIENT_REPORTS_VERSION', '1.0.18' );
 
 
 /**
@@ -515,6 +515,11 @@ function wp_client_reports_stats_page_updates() {
                         ?>
                     </div><!-- .wp-client-reports-big-numbers -->
 
+                    <?php 
+                        $include_update_details = apply_filters( 'wp_client_reports_include_update_details', true );
+                        if ($include_update_details === true) :
+                    ?>
+
                     <div class="wp-client-report-section wp-client-report-border-top">
 
                         <h3><?php _e('WordPress Core Updates','wp-client-reports'); ?></h3>
@@ -533,6 +538,8 @@ function wp_client_reports_stats_page_updates() {
                         <ul id="wp-client-reports-theme-updates-list" class="wp-client-reports-list"></ul>
 
                     </div><!-- .wp-client-report-section -->
+
+                    <?php endif; //$include_update_details ?>
 
                 </div><!-- .inside -->
             </div><!-- .main -->
@@ -1049,6 +1056,8 @@ function wp_client_reports_stats_email_updates($start_date, $end_date) {
         sprintf( __( 'Theme %s Updates', 'wp-client-reports' ), '<br>' )
     );
         
+    $include_update_details = apply_filters( 'wp_client_reports_include_update_details', true );
+    if ($include_update_details === true) :
     ?>
         
         <tr>
@@ -1100,6 +1109,7 @@ function wp_client_reports_stats_email_updates($start_date, $end_date) {
         </td>
         </tr>
     <?php
+    endif; //$include_update_details
 }
 
 
