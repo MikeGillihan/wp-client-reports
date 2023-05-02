@@ -158,6 +158,9 @@
     border:0px;
     border-radius: 0px;
     background:#FFF;
+    position: static;
+    left:auto;
+    top:auto;
 }
 .dashboard_page_wp_client_reports .ui-datepicker .ui-datepicker-header .ui-icon {
     display: block;
