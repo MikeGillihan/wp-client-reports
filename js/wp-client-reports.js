@@ -41,8 +41,9 @@
             e.preventDefault();
             var label = $(this).text();
             $("#wp-client-reports-date-chooser").hide();
-            var startDate = moment().format("YYYY-MM-DD");
-            var endDate = moment().format("YYYY-MM-DD");
+            var siteUTCOffset = getSiteUTCOffset();
+            var startDate = moment().utcOffset(siteUTCOffset).format("YYYY-MM-DD");
+            var endDate = moment().utcOffset(siteUTCOffset).format("YYYY-MM-DD");
             setDates(startDate, endDate, label);
             getData(startDate, endDate);
         });
@@ -51,8 +52,9 @@
             e.preventDefault();
             var label = $(this).text();
             $("#wp-client-reports-date-chooser").hide();
-            var startDate = moment().subtract(1, 'days').format("YYYY-MM-DD");
-            var endDate = moment().subtract(1, 'days').format("YYYY-MM-DD");
+            var siteUTCOffset = getSiteUTCOffset();
+            var startDate = moment().utcOffset(siteUTCOffset).subtract(1, 'days').format("YYYY-MM-DD");
+            var endDate = moment().utcOffset(siteUTCOffset).subtract(1, 'days').format("YYYY-MM-DD");
             setDates(startDate, endDate, label);
             getData(startDate, endDate);
         });
@@ -61,8 +63,9 @@
             e.preventDefault();
             var label = $(this).text();
             $("#wp-client-reports-date-chooser").hide();
-            var startDate = moment().subtract(7, 'days').format("YYYY-MM-DD");
-            var endDate = moment().format("YYYY-MM-DD");
+            var siteUTCOffset = getSiteUTCOffset();
+            var startDate = moment().utcOffset(siteUTCOffset).subtract(7, 'days').format("YYYY-MM-DD");
+            var endDate = moment().utcOffset(siteUTCOffset).format("YYYY-MM-DD");
             setDates(startDate, endDate, label);
             getData(startDate, endDate);
         });
@@ -71,8 +74,9 @@
             e.preventDefault();
             var label = $(this).text();
             $("#wp-client-reports-date-chooser").hide();
-            var startDate = moment().subtract(14, 'days').format("YYYY-MM-DD");
-            var endDate = moment().format("YYYY-MM-DD");
+            var siteUTCOffset = getSiteUTCOffset();
+            var startDate = moment().utcOffset(siteUTCOffset).subtract(14, 'days').format("YYYY-MM-DD");
+            var endDate = moment().utcOffset(siteUTCOffset).format("YYYY-MM-DD");
             setDates(startDate, endDate, label);
             getData(startDate, endDate);
         });
@@ -81,8 +85,9 @@
             e.preventDefault();
             var label = $(this).text();
             $("#wp-client-reports-date-chooser").hide();
-            var startDate = moment().subtract(30, 'days').format("YYYY-MM-DD");
-            var endDate = moment().format("YYYY-MM-DD");
+            var siteUTCOffset = getSiteUTCOffset();
+            var startDate = moment().utcOffset(siteUTCOffset).subtract(30, 'days').format("YYYY-MM-DD");
+            var endDate = moment().utcOffset(siteUTCOffset).format("YYYY-MM-DD");
             setDates(startDate, endDate, label);
             getData(startDate, endDate);
         });
@@ -91,8 +96,9 @@
             e.preventDefault();
             var label = $(this).text();
             $("#wp-client-reports-date-chooser").hide();
-            var startDate = moment().subtract(90, 'days').format("YYYY-MM-DD");
-            var endDate = moment().format("YYYY-MM-DD");
+            var siteUTCOffset = getSiteUTCOffset();
+            var startDate = moment().utcOffset(siteUTCOffset).subtract(90, 'days').format("YYYY-MM-DD");
+            var endDate = moment().utcOffset(siteUTCOffset).format("YYYY-MM-DD");
             setDates(startDate, endDate, label);
             getData(startDate, endDate);
         });
@@ -101,8 +107,9 @@
             e.preventDefault();
             var label = $(this).text();
             $("#wp-client-reports-date-chooser").hide();
-            var startDate = moment().subtract(1, 'month').startOf('month').format("YYYY-MM-DD");
-            var endDate = moment().subtract(1, 'month').endOf("month").format("YYYY-MM-DD");
+            var siteUTCOffset = getSiteUTCOffset();
+            var startDate = moment().utcOffset(siteUTCOffset).subtract(1, 'month').startOf('month').format("YYYY-MM-DD");
+            var endDate = moment().utcOffset(siteUTCOffset).subtract(1, 'month').endOf("month").format("YYYY-MM-DD");
             setDates(startDate, endDate, label);
             getData(startDate, endDate);
         });
@@ -111,14 +118,16 @@
             e.preventDefault();
             var label = $(this).text();
             $("#wp-client-reports-date-chooser").hide();
-            var startDate = moment().startOf('month').format("YYYY-MM-DD");
-            var endDate = moment().endOf("month").format("YYYY-MM-DD");
+            var siteUTCOffset = getSiteUTCOffset();
+            var startDate = moment().utcOffset(siteUTCOffset).startOf('month').format("YYYY-MM-DD");
+            var endDate = moment().utcOffset(siteUTCOffset).endOf("month").format("YYYY-MM-DD");
             setDates(startDate, endDate, label);
             getData(startDate, endDate);
         });
 
-        getData(moment().subtract(30, 'days').format("YYYY-MM-DD"), moment().format("YYYY-MM-DD"));
-        setDates(moment().subtract(30, 'days').format("YYYY-MM-DD"), moment().format("YYYY-MM-DD"), "Last 30 Days");
+        var siteUTCOffset = getSiteUTCOffset();
+        getData(moment().utcOffset(siteUTCOffset).subtract(30, 'days').format("YYYY-MM-DD"), moment().utcOffset(siteUTCOffset).format("YYYY-MM-DD"));
+        setDates(moment().utcOffset(siteUTCOffset).subtract(30, 'days').format("YYYY-MM-DD"), moment().utcOffset(siteUTCOffset).format("YYYY-MM-DD"), "Last 30 Days");
 
         $("#date-range").datepicker({
             maxDate: 0,
@@ -222,9 +231,9 @@
     }
 
     function getData(startDate, endDate) {
-        var start_date_utc = moment(startDate).utc().format("YYYY-MM-DD");
-        var end_date_utc = moment(endDate).utc().format("YYYY-MM-DD");
-        $(document).trigger('wp_client_reports_js_get_data', [start_date_utc, end_date_utc]);
+        var start_date_clean = moment(startDate).format("YYYY-MM-DD"); //.utc()
+        var end_date_clean = moment(endDate).format("YYYY-MM-DD"); //.utc()
+        $(document).trigger('wp_client_reports_js_get_data', [start_date_clean, end_date_clean]);
     }
 
     $(document).on('wp_client_reports_js_get_data', function(event, start_date_utc, end_date_utc){
@@ -296,6 +305,14 @@
             return wp_client_reports_data.moment_date_format;
         } else {
             return 'MM/DD/YYYY';
+        }
+    }
+
+    function getSiteUTCOffset() {
+        if (wp_client_reports_data.site_utc_offset) {
+            return wp_client_reports_data.site_utc_offset * 60;
+        } else {
+            return moment().utcOffset();
         }
     }
 

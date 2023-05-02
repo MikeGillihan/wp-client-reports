@@ -149,11 +149,15 @@
     border:solid 1px #8c8f94;
     background:#FFF;
     border-radius: 4px;
+    position: absolute;
+    left:-999px;
+    top:0px;
 }
 #wp-client-reports-date-chooser #date-range .ui-datepicker {
     padding:0px;
     border:0px;
     border-radius: 0px;
+    background:#FFF;
 }
 .dashboard_page_wp_client_reports .ui-datepicker .ui-datepicker-header .ui-icon {
     display: block;
